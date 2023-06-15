@@ -81,18 +81,4 @@ def process_text(text, ranker=nx.betweenness_centrality, sumsize=5, kwsize=7, tr
     return sents, kwds
 
 
-def test_builder():
-    with open('C:\\Users\\Tam Cong Doan\\PycharmProjects\\PhD\\Proposal\\Text\\english.txt', 'r',encoding = 'utf-8' ) as f:
-        text = f.read()
-    sents, kwds = process_text(text=text,ranker=nx.pagerank)
-    print (sents)
-    # print('SUMMARY:')
-    # for sent in sents:
-    #     print(*sent)
-    # print('\nKEYWORDS:')
-    # print("; ".join(kwds)+".")
 
-
-if __name__ == "__main__":
-    # print(stopwords())
-    test_builder()
