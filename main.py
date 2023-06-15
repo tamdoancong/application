@@ -151,7 +151,7 @@ def is_internet():
 
 ##2.12 Function connects to openAI API
 def connect_API(n_sentences):
-    file = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\fun_key.txt"
+    file = "C:\\Users\\Tam Cong Doan\\key.txt"
     openai.api_key = ftext2text(file)
     # models = openai.Model.list()
     # print(models)
