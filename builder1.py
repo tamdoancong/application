@@ -1,12 +1,7 @@
-
+# a perfect version from https://github.com/ptarau
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 import networkx as nx
-# import scipy as sp
-# from visualizer import gshow
-
-
-# import pygraphviz
 
 def stopwords():
     with open('stopwords.txt', 'r') as f:
@@ -22,9 +17,6 @@ def text2sents(text):
         ws = word_tokenize(sent)
         ls = []
         for w in ws:
-            # lw = w.lower()
-            # if not lw.isalpha(): continue
-            # if lw in stops: continue
             lemma = lemmatizer.lemmatize(w)
             if lemma in stops: continue
             ls.append(lemma)
@@ -70,16 +62,6 @@ def textstar(g, ranker, sumsize, kwsize, trim):
         if s_nodes <= sumsize: break
         if w_nodes <= kwsize: break
     return gbak, ranks
-
-
-short_text = """ 
-    I ate dinner. 
-    We had a three-course meal.
-    Brad came to dinner with us.
-    He loves fish tacos.
-    In the end, we all felt like we ate too much.
-    We all agreed; it was a magnificent evening.
-    """
 
 
 def process_text(text, ranker=nx.betweenness_centrality, sumsize=5, kwsize=7, trim=80):
