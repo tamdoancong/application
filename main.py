@@ -135,8 +135,32 @@ def get_n_sents(text, n, k):
 ## 2.10 Function clean   text
 def clean_text(text):
     # re.sub(pattern, repl, string, count=0, flags=0)
+    # replace strange symbols which are not in [a-zA-Z0-9.!?:,{}()@$\n ]
+    # between character f and t by -
     text = re.sub('f[^a-zA-Z0-9.!?:,{}()@$\n ]t', 'f-t', text)
-    text = re.sub('[^a-zA-Z0-9.!?:,{}()@$\n ]', '', text)
+    #remove all strange synbols which are not in [a-zA-Z0-9.!?:,{}()@$\n -]
+    text = re.sub('[^a-zA-Z0-9.!?:,{}()@$=\n -]', '', text)
+    #remove References and all text appears after that
+    # by splitting the text into 2 sparts with 'References' cut point
+    text = text.split('References',8)[0]
+    # remove authors information
+    text = text.split('Abstract', 8)[1]
+    # remove Algorithm
+    text = re.sub('\nAlgorithm.*?end(\n\d.*?end)+', '', text,flags=re.DOTALL)
+    #remove Figure
+    text = re.sub('\n[Ff]igure.*?\n', '\n', text, flags=re.DOTALL)
+    #remove Table
+    text = re.sub('\n[Tt]able.*?\.', '', text, flags=re.DOTALL)
+    #remove ROUGE
+    text = re.sub('ROUGE-[\dL]', '', text, flags=re.DOTALL)
+    #remove F1@5
+    text = re.sub('F1@[\d]*', '', text, flags=re.DOTALL)
+    #remove the lines with a lot numbers which often come from tables
+    text = re.sub('\n[A-Za-z]+(\s[\d]+[.][\d]+)+', '', text,flags=re.DOTALL)
+    #remove text in brackets
+    text = re.sub('\([^)]+\)', '', text, flags=re.DOTALL)
+    #
+    text = re.sub('https.+[.](com|html)', '', text, flags=re.DOTALL)
     return text
 
 
@@ -151,7 +175,8 @@ def is_internet():
 
 ##2.12 Function connects to openAI API
 def connect_API(n_sentences):
-    file = "C:\\Users\\Tam Cong Doan\\key.txt"
+    #path to openAI API key
+    file = "path"
     openai.api_key = ftext2text(file)
     # models = openai.Model.list()
     # print(models)
