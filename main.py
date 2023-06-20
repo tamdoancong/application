@@ -1,8 +1,11 @@
 ### 1.Import all neccesary libaries
+import numpy as np
+import pandas as pd
 from tkinter import*
 from PyPDF2 import PdfReader
 from tkinter import filedialog
 from builder1 import process_text
+# from textstar import process_text
 import networkx as nx
 import re
 import os
@@ -101,18 +104,26 @@ def get_textFfile(out_box):
     if fname[-3:] == 'pdf':
         # convert pdf file to text
         text = pdf2text(fname)
-        # clean the text
-        text = clean_text(text)
     # If the uploading file is txt, convert to a string
     else:text = ftext2text(fname)
+    # clean the text
+    a, c, text= clean_text(text)
     # If internet is connected,
     if is_internet() == True:
         # get M sentences by textstar
         gM, gk = get_n_sents(text, n_sentences, ks)
         # print(f" this is TextStar result: {gs}")
-        # pass these M sentences to openAI API model and get the summary
-        summary = connect_API(gM)
+        # add the abstract, conclusion and M sentences
+        # pass result text to openAI API model and get the summary
+        t = a + gM + c
+        summary = connect_API(t)
+        '''
+        # pass all clean text to API to see how the result is
+        summary = connect_API(text)
+        #error: maximum context length is 4097 tokens,
+        # however input file (GPT1) requested 5113 tokens (4913 in your prompt; 200 for the completion)
         # print(f" this is API result: {summary}")
+        '''
     else:
         # If internet is not available, get the summary  from textstar
         summary, kw = get_n_sents(text, n, k)
@@ -137,14 +148,19 @@ def clean_text(text):
     # re.sub(pattern, repl, string, count=0, flags=0)
     # replace strange symbols which are not in [a-zA-Z0-9.!?:,{}()@$\n ]
     # between character f and t by -
-    text = re.sub('f[^a-zA-Z0-9.!?:,{}()@$\n ]t', 'f-t', text)
+    # text = re.sub('f[^a-zA-Z0-9.!?:,{}%\[\]()@$/\n ]t', 'f-t', text)
+    text = re.sub('f[^\w.!?:,{}%\[\]()@$/\n ]t', 'f-t', text)
     #remove all strange synbols which are not in [a-zA-Z0-9.!?:,{}()@$\n -]
-    text = re.sub('[^a-zA-Z0-9.!?:,{}()@$=\n -]', '', text)
+    # text = re.sub('[^a-zA-Z0-9.!?:,{}()\[\]@$=/~\n -]', '', text)# this line code will result some missing words
+    text = re.sub('[^\w.!?:,{}%()\[\]@$=/~\n -]', '', text)#this line code does not  result some missing words
     #remove References and all text appears after that
-    # by splitting the text into 2 sparts with 'References' cut point
-    text = text.split('References',8)[0]
+    # by splitting the text into 2 sparts with 'References' or 'Acknowledgements' cut point
+    text = remove_references(text)
+    # get abstract
+    a = get_Abstract(text)
     # remove authors information
-    text = text.split('Abstract', 8)[1]
+    text = text.split('Abstract', 1)[1]
+    for i in range(len(re.findall('Introduction',text))):text = text.split('Introduction',1)[1]
     # remove Algorithm
     text = re.sub('\nAlgorithm.*?end(\n\d.*?end)+', '', text,flags=re.DOTALL)
     #remove Figure
@@ -155,19 +171,35 @@ def clean_text(text):
     text = re.sub('ROUGE-[\dL]', '', text, flags=re.DOTALL)
     #remove F1@5
     text = re.sub('F1@[\d]*', '', text, flags=re.DOTALL)
-    #remove the lines with a lot numbers which often come from tables
-    text = re.sub('\n[A-Za-z]+(\s[\d]+[.][\d]+)+', '', text,flags=re.DOTALL)
-    #remove text in brackets
-    text = re.sub('\([^)]+\)', '', text, flags=re.DOTALL)
-    #
-    text = re.sub('https.+[.](com|html)', '', text, flags=re.DOTALL)
-    return text
+    #remove text in between 2 round brackets
+    text = re.sub('\([^)]*\)', '', text, flags=re.DOTALL)
+    # remove text in between 2 square brackets
+    text = re.sub('\[.*\]', '', text, )
+    #remove https
+    text = re.sub('https?:', '', text)
+    # remove string after forward slash (/) which usually is converted from a table from pdf
+    text = re.sub('\n?[/].+\n', '', text)
+    # remove 1 or more white space before a comma
+    text = re.sub('[\s]+,', ',', text)
+    #remove a string of number which usually is converted from a table from pdf
+    text = re.sub('\n([\d]+\.?([\d]+)?)*\n', '', text)
+    # remove the lines with a lot numbers which often come from tables
+    text = re.sub('\n?[\w\s-]*(\s*?[\d]+[.][\d]+-?)+', '', text)
+    #remove line with equal sign
+    text = re.sub('\n?.*\s?=\s?.*\n', '', text)
+    # text = re.sub('\n?\s?.+\s?::\s?.+\n', '', text, flags=re.DOTALL)
+    # remove all newline
+    # text = re.sub('\n', '', text)
+    c = get_Conclusion(text)
+    return a,c,text
 
 
 ##2.11  Function checks if internet is connected or not
 def is_internet():
     try:
+        # try to connect to "www.google.com" at port 443
         s = socket.create_connection(("www.google.com", 443))
+        #
         if s!= None: return True
     except OSError:
         pass
@@ -175,15 +207,14 @@ def is_internet():
 
 ##2.12 Function connects to openAI API
 def connect_API(n_sentences):
-    #path to openAI API key
-    file = "path"
+    file = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\fun_key.txt"
     openai.api_key = ftext2text(file)
     # models = openai.Model.list()
     # print(models)
     response = openai.Completion.create(
         model = "text-davinci-003",
         prompt = "Summarize this text " + n_sentences ,
-        temperature = .6,
+        temperature = 0,
         # maximum tokens of an output
         max_tokens = 200,
         top_p = 1.0,
@@ -192,6 +223,21 @@ def connect_API(n_sentences):
     )
     return response.choices[0].text
 
+
+def get_Abstract(text):
+    text = text.split('Abstract', 8)[1]
+    text = text.split('Introduction', 8)[0]
+    text = text[:-2]
+    return text
+
+def remove_references(text):
+    if re.findall('Acknowledgements', text) != []: text = text.split('Acknowledgements',1)[0]
+    else:text = text.split('References',1)[0]
+    return text
+
+def get_Conclusion(text):
+    c = text.split('Conclusion', 1)[1]
+    return c
 
 ### 3.Call the function to create a withow with the specific title, color, and size
 window = create_window("Summary Task for Long Document",'green4', 900, 800)
