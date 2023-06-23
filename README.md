@@ -1,7 +1,7 @@
 ﻿###The app  can execute the summary task with a reasonable result without internet and perform well with the internet!<br />
 - *The function in which  a user can upload a file (PDF or TXT)then gets the summary*  
 **scenario**: 
-![](C:\Users\Tam Cong Doan\PycharmProjects\application\Picture\UI_snapshot.png) 
+![](Picture\UI_snapshot.png) 
  1. Click a button " Upload a File", a new window appears
 ![](C:\Users\Tam Cong Doan\PycharmProjects\application\Picture\uploadfile_snapshot.png)
  2. Click the arrow at the right down corner near "PDF files", a list of types of files display
