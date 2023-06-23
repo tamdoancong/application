@@ -152,46 +152,44 @@ def clean_text(text):
     text = re.sub('f[^\w.!?:,{}%\[\]()@$/\n ]t', 'f-t', text)
     #remove all strange synbols which are not in [a-zA-Z0-9.!?:,{}()@$\n -]
     # text = re.sub('[^a-zA-Z0-9.!?:,{}()\[\]@$=/~\n -]', '', text)# this line code will result some missing words
-    text = re.sub('[^\w.!?:,{}%()\[\]@$=/~\n -]', '', text)#this line code does not  result some missing words
+    text = re.sub('[^\w.!?:,{}%()\[\]@$=/~\n -]', ' ', text)#this line code does not  result some missing words
     #remove References and all text appears after that
     # by splitting the text into 2 sparts with 'References' or 'Acknowledgements' cut point
     text = remove_references(text)
     # get abstract
-    a = get_Abstract(text)
-    # remove authors information
-    text = text.split('Abstract', 1)[1]
-    for i in range(len(re.findall('Introduction',text))):text = text.split('Introduction',1)[1]
+    ab, text = get_Abstract(text)
+
     # remove Algorithm
-    text = re.sub('\nAlgorithm.*?end(\n\d.*?end)+', '', text,flags=re.DOTALL)
+    text = re.sub('\nAlgorithm.*?end(\n\d.*?end)+', ' ', text,flags=re.DOTALL)
     #remove Figure
     text = re.sub('\n[Ff]igure.*?\n', '\n', text, flags=re.DOTALL)
     #remove Table
-    text = re.sub('\n[Tt]able.*?\.', '', text, flags=re.DOTALL)
+    text = re.sub('\n[Tt]able.*?\.', ' ', text, flags=re.DOTALL)
     #remove ROUGE
-    text = re.sub('ROUGE-[\dL]', '', text, flags=re.DOTALL)
+    text = re.sub('ROUGE-[\dL]', ' ', text, flags=re.DOTALL)
     #remove F1@5
-    text = re.sub('F1@[\d]*', '', text, flags=re.DOTALL)
+    text = re.sub('F1@[\d]*', ' ', text, flags=re.DOTALL)
     #remove text in between 2 round brackets
-    text = re.sub('\([^)]*\)', '', text, flags=re.DOTALL)
+    text = re.sub('\([^)]*\)', ' ', text, flags=re.DOTALL)
     # remove text in between 2 square brackets
-    text = re.sub('\[.*\]', '', text, )
+    text = re.sub('\[.*\]', ' ', text, )
     #remove https
-    text = re.sub('https?:', '', text)
+    text = re.sub('https?:', ' ', text)
     # remove string after forward slash (/) which usually is converted from a table from pdf
-    text = re.sub('\n?[/].+\n', '', text)
+    text = re.sub('\n?[/].+\n', ' ', text)
     # remove 1 or more white space before a comma
     text = re.sub('[\s]+,', ',', text)
     #remove a string of number which usually is converted from a table from pdf
-    text = re.sub('\n([\d]+\.?([\d]+)?)*\n', '', text)
+    text = re.sub('\n([\d]+\.?([\d]+)?)*\n', ' ', text)
     # remove the lines with a lot numbers which often come from tables
-    text = re.sub('\n?[\w\s-]*(\s*?[\d]+[.][\d]+-?)+', '', text)
+    text = re.sub('\n?[\w\s-]*(\s*?[\d]+[.][\d]+-?)+', ' ', text)
     #remove line with equal sign
-    text = re.sub('\n?.*\s?=\s?.*\n', '', text)
+    # text = re.sub('\n?.*\s?=\s?.*\n', '', text)
     # text = re.sub('\n?\s?.+\s?::\s?.+\n', '', text, flags=re.DOTALL)
     # remove all newline
-    # text = re.sub('\n', '', text)
+    text = re.sub('\n', ' ', text)
     c = get_Conclusion(text)
-    return a,c,text
+    return ab,c,text
 
 
 ##2.11  Function checks if internet is connected or not
@@ -224,20 +222,39 @@ def connect_API(n_sentences):
     return response.choices[0].text
 
 
+# Function gets Abstract and remove author's information
 def get_Abstract(text):
-    text = text.split('Abstract', 8)[1]
-    text = text.split('Introduction', 8)[0]
-    text = text[:-2]
-    return text
+    abs = re.findall('Abstract|ABSTRACT', text)
+    intr = re.findall('Introduction|INTRODUCTION', text)
+    # print(intr[-1])
+    if abs != []:
+        # remove authors information
+        text = text.split(str(abs[0]), 1)[1]
+        # print(f" text after Abstract: {text}")
+        abstract = text.split(str(intr[-1]), 1)[0]
+        k = re.findall('KEYWORDS|keywords', abstract)
+        if k != []:
+            abstract = abstract.split(str(k[-1]),1)[0]
+        for i in range(len(intr )):
+            text = text.split(str(intr[-1]), 1)[1]
+        return abstract, text
+    else: return '', text
+
 
 def remove_references(text):
-    if re.findall('Acknowledgements', text) != []: text = text.split('Acknowledgements',1)[0]
-    else:text = text.split('References',1)[0]
+    r = re.findall('References|REFERENCES', text)
+    a = re.findall('Acknowledgements|ACKNOWLEDGEMENTS', text)
+    if r != []:
+        if a != []: text = text.split(str(a[-1]),1)[0]
+        else:text = text.split(r[-1],1)[0]
     return text
 
 def get_Conclusion(text):
-    c = text.split('Conclusion', 1)[1]
-    return c
+    c = re.findall('Conclusion|CONCLUSION', text)
+    if c != []:
+        conc = text.split(str(c[-1]), 1)[1]
+        return conc
+    else:return ""
 
 ### 3.Call the function to create a withow with the specific title, color, and size
 window = create_window("Summary Task for Long Document",'green4', 900, 800)
@@ -262,7 +279,8 @@ out_box = scroll_text(780, 188, 60, 80, 97, 8)
 # Call a function to create a canvas
 c3 = create_canvas(window, "green", 793, 50, 60, 288)
 # Insert text to the canvas
-t2 = c3.create_text(360, 30, text = " Please put the input text to the box below or click the left button to upload a file ",
+t2 = c3.create_text(360, 30, text = " Please put the input text to the box below then click the right button to get summary\n "
+                                    "                           or click the left button to upload a file to get summary ",
                     font = ("Arial", 12, "bold"), anchor = CENTER )
 
 
