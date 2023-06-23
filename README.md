@@ -1,4 +1,4 @@
-﻿### The app  can execute the summary task with a reasonable result without internet and perform well with the internet!<br />
+﻿### The app can execute the summary task with reasonable results even without an internet connection, and perform  well with the internet!  
 - *The function in which  a user can upload a file (PDF or TXT)then gets the summary*  
 **scenario**: 
 1. A user opens the app, the user interface will look like this picture 
