@@ -1,11 +1,8 @@
 ### 1.Import all neccesary libaries
-import numpy as np
-import pandas as pd
 from tkinter import*
 from PyPDF2 import PdfReader
 from tkinter import filedialog
 from builder1 import process_text
-# from textstar import process_text
 import networkx as nx
 import re
 import os
