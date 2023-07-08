@@ -22,7 +22,7 @@ def create_window(title, color, w, h):
     # Creat a window
     wd = Tk()
     # Write a title of the window
-    wd.title("Fun Chat")
+    wd.title("Fun Chat and Summary for a Long Document")
     # Set the minimum size of the window when window appears
     wd.minsize(width = w, height = h)
     # Set the background color for the window
