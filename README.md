@@ -3,18 +3,24 @@
 - *The function in which  a user can upload a file (PDF or TXT)then gets the summary.(This is the main function of this app)*  
 **scenario**: 
 1. A user opens the app, the user interface will look like this picture 
-![](https://github.com/tamdoancong/application/blob/main/Picture/empty_chatbot.png) 
-2. Click a button " Upload a File", a new window appears
+![](https://github.com/tamdoancong/application/blob/main/Picture/chat_on_off_empty.png) 
+2. If a device of a user is connected to the internet, the user can choose that the app will   
+connect to the internet or not by clicking on the left button. If  this button shows "Internet On", then 
+the app will connect to the internet if it is available. If  this button shows "Internet On",then 
+the app will connect to the internet.If a device of a user is not connected to the internet, then the app 
+will automatically work without the internet mode. The system will also let a user know that the internet is 
+connected or not. Note: limited functions will perform without the internet mode!
+3. Click a button " Upload a File", a new window appears
 ![](https://github.com/tamdoancong/application/blob/main/Picture/uploadfile_snapshot.png)
-3. Click the arrow at the right down corner near "PDF files", a list of types of files display
+4. Click the arrow at the right down corner near "PDF files", a list of types of files display
 ![](https://github.com/tamdoancong/application/blob/main/Picture/arrow_snapshot.png)
-4. Click to choose the type of the file which will be uploaded
+5. Click to choose the type of the file which will be uploaded
 ![](https://github.com/tamdoancong/application/blob/main/Picture/click_a_file.png)
-5. Click on the file which will be uploaded, the file will be highlighted
-6. Click "Open" button, the summary will display on the textbox  after the green word "System:" in few seconds  
-   ![](https://github.com/tamdoancong/application/blob/main/Picture/gpt3_chat.png)
+6. Click on the file which will be uploaded, the file will be highlighted
+7. Click "Open" button, the summary will display on the textbox  after the green word "System:" in few seconds  
+   ![](https://github.com/tamdoancong/application/blob/main/Picture/chat_on_off.png)
 _A result summary from the book "Introduction to Graph Theory" by Robin J. Wilson_
-![](https://github.com/tamdoancong/application/blob/main/Picture/new_Wilson_graph.png)
+![](https://github.com/tamdoancong/application/blob/main/Picture/on_off_wilson.png)
 - The function in which a user can chat (This function require internet and OpenAI key)
 A user can ask any question or tell the model do any task like ChatGPT but the accuracy 
 may be less than ChatGPT. 
