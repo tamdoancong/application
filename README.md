@@ -6,10 +6,10 @@
 ![](https://github.com/tamdoancong/application/blob/main/Picture/chat_on_off_empty.png) 
 2. If a device of a user is connected to the internet, the user can choose that the app will   
 connect to the internet or not by clicking on the left button. If  this button shows "Internet On", then 
-the app will connect to the internet if it is available. If  this button shows "Internet On",then 
-the app will connect to the internet.If a device of a user is not connected to the internet, then the app 
+the app will connect to the internet if it is available. If  this button shows "Internet Off",then 
+the app will not connect to the internet. If a device of a user is not connected to the internet, then the app 
 will automatically work without the internet mode. The system will also let a user know that the internet is 
-connected or not. Note: limited functions will perform without the internet mode!
+really connected to the app or not. Note: limited functions will perform without the internet mode!
 3. Click a button " Upload a File", a new window appears
 ![](https://github.com/tamdoancong/application/blob/main/Picture/uploadfile_snapshot.png)
 4. Click the arrow at the right down corner near "PDF files", a list of types of files display
