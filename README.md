@@ -26,11 +26,13 @@ the latest fantastic new technology can produce more equality AI deployment. Thi
 chances for low-income people to reach AI and benefit themselves and fortunate people still enjoy 
 a new excellent AI. Thus, more people can be benefited from AI. This app just focuses on summary task
 for long document but the purpose behind is to support equality AI deployment.
-## version 1.0 : Local mode only. This version only perform a summary task and just need a  computer to perform!
+### version 1.0 : Local mode only. This version only perform a summary task and just need a  computer to perform!
 click this link to get it: https://github.com/tamdoancong/offline_summary_app
 (Currently, this version just work on Window)
-Textstar is used for this version.
-Text is described in this paper:
+Textstar is used for this version. 
+
+Text is described in this paper: 
+
 @inproceedings{brock2022textstar,
   title={Textstar: a Fast and Lightweight Graph-Based Algorithm for Extractive Summarization and Keyphrase Extraction},
   author={Brock, David and Khan, Ali and Doan, Tam and Lin, Alicia and Guo, Yifan and Tarau, Paul},
