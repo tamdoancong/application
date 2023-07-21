@@ -1,11 +1,13 @@
 ﻿## Note: This app is in the process of development. The code in here I just copied some from my private github. All code will be here when the development is finished
 ### The app can execute the summary task with reasonable results even without an internet connection, and perform  well with the internet when a user uploads a document!  
 - *The function in which  a user can upload a file (PDF or TXT)then gets the summary.(This is the main function of this app)*  
+**use case: upload a pdf file** 
 **scenario**: 
 1. A user opens the app, the user interface will look like this picture 
-![](https://github.com/tamdoancong/application/blob/main/Picture/chat_on_off_empty.png) 
+![](https://github.com/tamdoancong/application/blob/main/Picture/v1.2/chat_API_empty.png) 
 2. If a device of a user is connected to the internet, the user can choose that the app will   
-connect to the internet or not by clicking on the left button. If  this button shows "Internet On", then 
+ work in " API mode" or "Local mode" by clicking on the left button . If a user choose the "API mode", then a user have to upload 
+the OpenAI API key file the picture below.
 the app will connect to the internet if it is available. If  this button shows "Internet Off",then 
 the app will not connect to the internet. If a device of a user is not connected to the internet, then the app 
 will automatically work without the internet mode. The system will also let a user know that the internet is 
