@@ -31,7 +31,7 @@ Click this link to get it: https://github.com/tamdoancong/offline_summary_app(Cu
 Textstar is used for this version. 
 
 Textstar is described in this paper: 
-'''
+```
 @inproceedings{brock2022textstar,
   title={Textstar: a Fast and Lightweight Graph-Based Algorithm for Extractive Summarization and Keyphrase Extraction},
   author={Brock, David and Khan, Ali and Doan, Tam and Lin, Alicia and Guo, Yifan and Tarau, Paul},
@@ -39,4 +39,4 @@ Textstar is described in this paper:
   pages={161--169},
   year={2022}
 }
-''''
+```
