@@ -11,6 +11,7 @@ import openai
 import socket
 import nltk
 
+
 # 2. API Key file path
 key_dir = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\"
 key_file = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\fun_key.txt"

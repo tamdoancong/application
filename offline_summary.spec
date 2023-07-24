@@ -7,8 +7,8 @@ block_cipher = None
 a = Analysis(
     ['offline_summary.py'],
     pathex=[],
-    binaries=[('stopwords.txt', '.')],
-    datas=[],
+    binaries=[],
+    datas=[('stopwords.txt', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -37,6 +37,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    version='version.txt',
 )
 coll = COLLECT(
     exe,
