@@ -27,7 +27,7 @@ chances for low-income people to reach AI and benefit themselves and fortunate p
 a new excellent AI. Thus, more people can be benefited from AI. This app just focuses on summary task
 for long documents but its deeply purpose is to  support the equitable deployment of AI.
 ### version 1.0 : Local mode only. This version only perform a summary task and just need a  computer to perform!
-Click this link to get it: https://github.com/tamdoancong/offline_summary_app  (Currently, this version just work on Window)
+Click this link to download it: https://github.com/tamdoancong/offline_summary_app  (Currently, this version just work on Window)
 Textstar is used for this version. 
 
 Textstar is described in this paper: 
