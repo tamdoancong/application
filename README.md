@@ -6,25 +6,26 @@ open a new history for human society. It is a certain process we cannot avoid or
 more people to be benefited, especially the middle class and lower class also gain benefit from this
 new opportunity not just the upper classes people. As we know, the internet apps like ChatGPT, Bing AI,
 Google Bart etc... which were developed base on latest LLMs. Thus, they can perform well many NLP tasks,
-which include summary task. The basic versions of these apps also are free. Recently,
-the https://claude.ai/ provides a specific tool for summary with various types of files.  
-AI21 lap also produced a specific internet app for a long document as they say it perform better
+which include summary task. The basic versions of these apps also are free. However, the internet is required to use those apps and the input tokens are limited.  
+Recently,the https://claude.ai/ provides a specific tool for summary with various types of files. AI21 lap also produced a specific internet app for a long document as they say it performs better
 than GPT3. However, the book “Introduction to Graph Theory” by Robin J. Wilson (180 pages, PDF file) 
 was uploaded, then both showed an error message “Uploaded file is too large…” or “network error.
-A user needs the internet to use these models. Thus, people who do not have the internet cannot take 
-advantage from these powerful AI. Moreover, these top deep learning models currently have limited 
+A user also needs the internet to use these models.   
+Thus, people who do not have the internet cannot take advantage from these powerful AI. Moreover, these top deep learning models currently have restricted 
 input tokens. Thus, even though people have money to access the internet and pay for service plus, 
 currently these apps cannot perform the summary task for a long document which have more tokens than 
-these apps’ cap if a user does not divide the long document to several small parts. According to 
-https://www.census.gov, until 2021 , 93.1% of US households or 115.4 million households  have computer,
+these apps’ cap if a user does not divide the long document to several small parts.   
+According to https://www.census.gov, until 2021 , 93.1% of US households or 115.4 million households  have computer,
 but only 87.0% or 107.8 million households have the internet. Thus, approximate 7.6 million households or around
-19.76 million people in US who have computer but unable to access to the internet. This category is 
-huger in development countries. In order to benefit more people from the AI development, AI developers 
-may consider low-income people's benefit. Thus, how to have an application which can support who do not 
-have the internet connected in their device still can deploy AI and who have internet can access
+**19.76 million** people in US who have computer but unable to access to the internet. This category is 
+huger in development countries. In order to benefit more people from the AI development's progress, AI's developers 
+may consider more about low-income people's benefit.   
+Therefore, how to have an application which can support who do not 
+have the internet connecting in their device still can deploy AI and who have the internet can access
 the latest fantastic new technology can produce more equality AI deployment. This scheme creates more
-chances for low-income people to reach AI and benefit themselves and fortunate people still enjoy 
-a new excellent AI. Thus, more people can be benefited from AI. This app just focuses on summary task
+chances for low-income people to reach AI and benefit themselves and fortunate people also still enjoy 
+a new excellent AI. Thus, more people can be benefited from AI.   
+This desktop app just focuses on the summary task
 for long documents but its deeply purpose is to  support the equitable deployment of AI.
 ### version 1.0 : Local mode only. This version only perform a summary task and just need a  computer to perform!
 Click this link to download it: https://github.com/tamdoancong/offline_summary_app  (Currently, this version just work on Window)
