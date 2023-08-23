@@ -6,18 +6,10 @@ from tkinter import filedialog
 from builder1 import process_text
 import networkx as nx
 import re
-import os
-import openai
-import socket
 import nltk
 
-# Set global variable for number of sentences and keyphases to extract when internet is not available.
+# Set default number of sentences and keyphases to extract
 n, k = 5, 5
-
-
-# Set global variable for number of sentences and keyphases to extract when internet is available.
-n_sentences, ks = 36, 5
-
 
 # 3. All necessary functions
 # 3.1 This function creates a window with desired title, color, and size.
@@ -27,9 +19,9 @@ def create_window(title, color, w, h):
     # Write a title of the window
     wd.title("Offline Summary Tool")
     # Set the minimum size of the window when window appears
-    wd.minsize(width=w, height=h)
+    wd.minsize(width = w, height = h)
     # Set the background color for the window
-    wd.configure(bg=color)
+    wd.configure(bg = color)
     return wd
 
 
@@ -37,8 +29,8 @@ def create_window(title, color, w, h):
 # Parameters: window: what window the canvas will be put in, color, width, height,
 #x: how many pixels from the left of the window,  y: how many pixels from the top of the window
 def create_canvas(window, color, w, h, x, y):
-    c = Canvas(window, bg=color, width=w, height=h)
-    c.place(x=x, y=y)
+    c = Canvas(window, bg = color, width = w, height = h)
+    c.place(x = x, y = y)
     return c
 
 
@@ -48,10 +40,10 @@ def create_canvas(window, color, w, h, x, y):
 # wchar:number characters can be inserted for each row; hchar: number characters can be inserted for each column
 def scroll_text(w, h, x, y, wchar, hchar):
     # Create a frame in the window
-    frame = Frame(window, width=w, height=h)
-    frame.place(x=x, y=y)
-    text_box = ScrolledText(frame, width=wchar, height=hchar)
-    text_box.pack(fill=BOTH, expand=1)
+    frame = Frame(window, width = w, height = h)
+    frame.place(x = x, y = y)
+    text_box = ScrolledText(frame, width = wchar, height = hchar)
+    text_box.pack(fill = BOTH, expand = 1)
     return text_box
 
 
@@ -86,9 +78,8 @@ def upload_file():
     return fname
 
 
-# 3.8 This function gets a user's question and feeds that to chat_API() function
-# then gets the answer and insert it to out_box.
-# Parameter: Click the Enter key on the  keyboard after finishing enter a question.
+# 3.8 This function gets user's desired number of summary sentences.
+# Parameter: Click the Enter key on the  keyboard after finishing enter a desired number of summary sentences.
 # Return: none
 m = 0
 def num_sents(event):
@@ -96,20 +87,18 @@ def num_sents(event):
     if m == 0:
         u_text = out_box.get("end-2c linestart", "end-1c")
         out_box.insert(END, "\nSystem: Please click the button below to upload a file! ", 'tag2')
-        m = int(u_text[5:])
+        r = re.findall("[^0-9]*",u_text[5:])
+        print(r)
+        print('\n')
+        print(r[0])
+        if r ==[''] or r[0] != '' : m = n
+        else: m = int(u_text[5:])
         print(f" num of sentences:{m}")
 
     return m
 
 def message_user(event):
     out_box.insert(END, "\nSystem: Please click the button below to upload a file! ", 'tag2')
-
-
-
-
-
-
-
 
 
 # 3.11 This function writes down a string to a file.
