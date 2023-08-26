@@ -1,4 +1,4 @@
-# a perfect version from https://github.com/ptarau
+# a better version from https://github.com/ptarau
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 import networkx as nx
@@ -11,6 +11,7 @@ def stopwords():
 def text2sents(text):
     lemmatizer = WordNetLemmatizer()
     stops = stopwords()
+    # print(f" stopwords: {stops}")
     sents = sent_tokenize(text)
     lss = []
     for sent in sents:
@@ -18,8 +19,8 @@ def text2sents(text):
         ls = []
         for w in ws:
             lemma = lemmatizer.lemmatize(w)
-            if lemma in stops: continue
-            ls.append(lemma)
+            if lemma not in stops and lemma not in [',','.','!','?','@','#','$','%','&','*','^','+','-','/','|','~']:
+                ls.append(lemma)
         if not ls: continue
         lss.append((ls, sent))
     return lss
@@ -49,12 +50,12 @@ def textstar(g, ranker, sumsize, kwsize, trim):
         split = trim * total // 100
         # print(ranks)
         weak_nodes = [n for (n, _) in ranks[split:]]
-        weakest=weak_nodes[-1]
-        weakest_rank=unsorted_ranks[weakest]
+        weakest = weak_nodes[-1]
+        weakest_rank = unsorted_ranks[weakest]
         for n in weak_nodes:
             g.remove_node(n)
         for n,r in ranks[0:split]:
-            if r<=weakest_rank:
+            if r <= weakest_rank:
                 g.remove_node(n)
         s_nodes = len([n for n in g.nodes if isinstance(n, int)])
         w_nodes = g.number_of_nodes() - s_nodes
@@ -64,10 +65,10 @@ def textstar(g, ranker, sumsize, kwsize, trim):
     return gbak, ranks
 
 
-def process_text(text, ranker=nx.betweenness_centrality, sumsize=5, kwsize=7, trim=80):
+def process_text(text, ranker = nx.betweenness_centrality, sumsize = 5, kwsize = 7, trim = 80):
     lss = text2sents(text)
     # print(len(lss))
-    # print(lss)
+    # print( f" lss : {lss}")
     g = sents2graph(lss)
     # print(g)
     # for f,t in g.edges(): print(t,'<-',f)
@@ -78,6 +79,7 @@ def process_text(text, ranker=nx.betweenness_centrality, sumsize=5, kwsize=7, tr
     all_sents = [sent for (_, sent) in lss]
     sents = [(i,all_sents[i]) for i in sids]
     kwds = [w for (w,_) in ranks if isinstance(w, str)][0:kwsize]
+    # print(f" keyword from textstar: {kwds}")
     return sents, kwds
 
 

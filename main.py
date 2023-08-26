@@ -12,9 +12,9 @@ import socket
 import nltk
 
 
-# 2. API Key file path
-key_dir = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\"
-key_file = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\fun_key.txt"
+# 2. Current working directory
+work_dir = os.getcwd()
+# print(work_dir)
 # Set global variable for number of sentences and keyphases to extract when internet is not available.
 n, k = 5, 5
 # Set global variable for number of sentences and keyphases to extract when internet is available.
@@ -111,7 +111,7 @@ def getkey(event):
     key = text[46:]
     key = key.strip()
     if testkey(key):
-        text2file(key, key_dir + "key.text")
+        text2file(key, work_dir + "key.txt")
         insert_keybox("The system got the API key!")
     else:
         insert_keybox("API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
@@ -192,7 +192,7 @@ def get_textFfile(out_box):
                 # System works in local mode.
                 else:
                     # Get number of sentences from sents_box if a user enters.
-                    num = get_sents_box("Enter")
+                    num = get_sents_box("")
                     # Otherwise, get a default number.
                     if num == 0: num = n
                     # Get summary from a graph algorithm for an entire book.
@@ -214,7 +214,7 @@ def get_textFfile(out_box):
                 nsa, a, c, summary = paper2out(text)
                 # If the system is working in a "Local mode" and a is not an empty string
                 # and the desired number of summary's sentences less than number sentences in a.
-                if a != "" and user_know() == "Local mode!" and get_sents_box("Enter") < nsa:
+                if a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
                     # Insert title and a to out_box.
                     insert_outbox_article(title, a, "by author(s)")
                 else:
@@ -232,7 +232,7 @@ def get_textFfile(out_box):
                 insert_outbox_article(title, summary, None)
             # If the system is working in a "Local mode" and a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
-            elif a != "" and user_know() == "Local mode!" and get_sents_box("Enter") < nsa:
+            elif a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
                 insert_outbox_article(title, a, " by author(s)")
                 out_box.insert(END, "\nUser: ", 'tag1')
             else:
@@ -352,8 +352,8 @@ def is_internet():
 # Parameter: text, number words of a summary.
 # Return: either a result summary or an error message.
 def connect_API(n_sentences, m):
-    # is_key_here()
-    openai.api_key = ftext2text(key_file)
+    print(ftext2text(work_dir + "key.txt"))
+    openai.api_key = ftext2text(work_dir + "key.txt")
     s_answer = openai.ChatCompletion.create(
         # this model has total 4,097 tokens (input and output)
         model="gpt-4",
@@ -371,8 +371,7 @@ def connect_API(n_sentences, m):
 # Parameter: a prompt.
 # Return: either an answer for a prompt or an error message.
 def chat_API(uq):
-    key_file = "C:\\Users\\Tam Cong Doan\\Desktop\\PhD_doc\\qualify_exam\\GPT\\API\\fun_key.txt"
-    openai.api_key = ftext2text(key_file)
+    openai.api_key = ftext2text(work_dir + "key.txt")
 
     answer = openai.ChatCompletion.create(
         model="gpt-4",
@@ -670,6 +669,7 @@ def get_chapters_text(text):
 # Parameter: text
 # Return: number sentences in an abstract, an abstract or an empty string, a conclusion or an empty string,
 # and a summary
+
 def paper2out(text):
     # Call the clean_text(text) function to clean the text.
     a, c, body_text = clean_text(text)
@@ -680,24 +680,28 @@ def paper2out(text):
     for s in sents:
         if ("University" or "Author" or "@") not in s: a += s
     if is_internet() and is_on():
-        ws = get_sents_box("Enter")
-        if ws == 0: ws = 200
-        # Get M sentences by Textstar
-        gM, gk = get_n_sents(body_text, n_sentences, ks)
-        # Concatenate  the abstract, the conclusion and the M sentences
-        t1 = a + gM + c
-        # and pass result to openAI API model and get the summary.
-        st = connect_API(t1, ws)
-        sents = st.split('.')
-        summary = ".".join(sents[:-1])
-        summary = "\n" + summary + '.'
-        insert_keybox("The system got a working API key!")
+        global ws
+        ws = get_sents_box("")
+        if ws == 0:
+            ws = 200
+            # Get M sentences by Textstar
+            gM, gk = get_n_sents(body_text, n_sentences, ks)
+            # Concatenate  the abstract, the conclusion and the M sentences
+            t1 = a + gM + c
+            # and pass result to openAI API model and get the summary.
+            st = connect_API(t1, ws)
+            sents = st.split('.')
+            summary = ".".join(sents[:-1])
+            summary = "\n" + summary + '.'
+            insert_keybox("The system got a working API key!")
     # If internet is not available
     else:
-        num = get_sents_box("Enter")
-        if num == 0: num = n
-        sum, kw = get_n_sents(body_text, num, k)
-        summary = sum
+        global num
+        num = get_sents_box("")
+        if num == 0:
+            num = n
+            sum, kw = get_n_sents(body_text, num, k)
+            summary = sum
     return nsa, a, c, summary
 
 
@@ -766,7 +770,8 @@ def upload_key():
     if is_txt(file):
         key = ftext2text(file)
         if testkey(key):
-            text2file(key, key_dir + "key.text")
+            text2file(key, work_dir + "key.txt")
+            print(f" key was saved at {work_dir}\key.txt")
             insert_keybox("The system got a working API key!")
         else:
             insert_keybox(
@@ -780,7 +785,7 @@ def upload_key():
 # Parameter: none.
 # Return : True or False.
 def is_key_here():
-    key = ftext2text(key_file)
+    key = ftext2text(work_dir + "key.txt")
     if testkey(key):
         insert_keybox("The system got a working API key!")
         return True
@@ -807,21 +812,26 @@ def num_sents(event):
     print(f"num sentences : {t[29:]}")
     return t[29:].strip()
 
-
+ws = 0
+num = 0
 def get_sents_box(event):
     t = sents_box.get("1.0", "end-1c")
     if is_on():
-        print(f" num of words:{t[26:]}")
-        if t[26:].strip() == "":
+    # number of words
+        r = re.findall("[^0-9]*", t[26:])
+        if r ==[''] or r[0] != '':
             return 0
         else:
             return int(t[26:].strip())
     else:
-        print(f" num of sentences:{t[30:]}")
-        if t[30:].strip() == "":
+    #num of sentences
+
+        r = re.findall("[^0-9]*", t[30:])
+        if r ==[''] or r[0] != '':
             return 0
         else:
             return int(t[30:].strip())
+            print(f"number of sentences {t[30:]}")
 
 
 ### 3.Call the function to create a withow with the specific title, color, and size
@@ -861,7 +871,7 @@ buttonL = Button(window, bg="green", text="Local mode", font=('Arial', 12, "bold
                  command=lambda: on_off())
 buttonL.place(x=26, y=504)
 
-buttonM = Button(window, bg="green", text="Upload a key", font=('Arial', 12, "bold"),
+buttonM = Button(window, bg="green", text="Provide your API key", font=('Arial', 12, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: upload_key())
 buttonM.place(x=386, y=504)

@@ -86,14 +86,29 @@ def num_sents(event):
     global m
     if m == 0:
         u_text = out_box.get("end-2c linestart", "end-1c")
-        out_box.insert(END, "\nSystem: Please click the button below to upload a file!", 'tag2')
+        out_box.insert(END, "\nSystem: Please enter a desired number of keywords and click 'space' key!", 'tag2')
         out_box.insert(END,"\nUser:",'tag1')
         r = re.findall("[^0-9]*",u_text[5:])
         if r ==[''] or r[0] != '' : m = n
         else: m = int(u_text[5:])
         print(f" num of sentences:{m}")
+
     return m
 
+
+kw = 0
+def num_keywords(event):
+    global kw
+    if kw == 0:
+        u_text = out_box.get("end-2c linestart", "end-1c")
+        out_box.insert(END, "System: Please click the button below to upload a file!", 'tag2')
+        out_box.insert(END,"\nUser:",'tag1')
+        r = re.findall("[^0-9]*",u_text[5:])
+        if r ==[''] or r[0] != '' : kw = k
+        else: kw = int(u_text[5:])
+        print(f" num of keywords:{kw}")
+
+    return m
 
 def message_user(event):
     out_box.insert(END, "\nSystem: Please click the button below to upload a file! ", 'tag2')
@@ -124,57 +139,72 @@ def get_textFfile(out_box):
         if is_pdf(fname):
             # convert pdf file to text
             n_pages, lp, text = pdf2text(fname)
+            # print(f" lp: {lp}")
             out_text = ""
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
             if n_pages > 100 and lp != []:
                 # Get summary from a graph algorithm for an entire book.
-                sumbook, gk = get_n_sents(text, num_sents(""), k)
+                sumbook, gk = get_n_sents(text, num_sents(""), num_keywords(""))
+                kwords = ""
+                for w in gk:
+                    kwords += w + '; '
+                print(f" keywords for book: {gk}")
                 # For each chapter:
                 for e in lp:
                     # Call the function clean_text() to clean each chapter's text.
                     a, c, chap = clean_text(e[1])
                     # Get a summary for each chapter from a graph algorithm.
-                    gM, gk = get_n_sents(chap, num_sents(""), k)
+                    gM, gk = get_n_sents(chap, num_sents(""), num_keywords(""))
+                    # print(gM)
                     # Concatenate all chapters' summary form a graph algorithm.
                     out_text += '\n' + e[0] + gM
                 # Insert a summary for a whole book to out_box.
-                insert_outbox_book(title, sumbook, gk, out_text)
+                insert_outbox_book(title, sumbook, kwords, out_text)
             # If chapters' structure cannot extract from PDF file.
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
                 nsa, a, c, summary, kw = paper2out(text)
+                kwords = ""
+                for w in kw:
+                    kwords += w + '; '
+                print(f" keywords of this paper:{kw}")
                 # If a is not an empty string
                 # and the desired number of summary's sentences less than number sentences in a.
                 if a != ""  and num_sents("")< nsa:
                     # Insert title and a to out_box.
-                    insert_outbox_article(title, a,  "by author(s)")
+                    insert_outbox_article(title, a,  kwords, "by author(s)")
                 else:
                     # Insert title and summary to out_box.
-                    insert_outbox_article(title, summary, "")
+                    insert_outbox_article(title, summary, kwords, "")
         # If an uploading file is a txt file,
         if is_txt(fname):
             # convert the file to a string.
             text = ftext2text(fname)
             # Call function paper2out(text) to process the string
             nsa, a, c, summary, kw = paper2out(text)
+            kwords = ""
+            for w in kw:
+                kwords += w + '; '
             # If a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
             if a != "" and num_sents("")< nsa:
-                insert_outbox_article(title, a, " by author(s)")
+                insert_outbox_article(title, a,  kwords, " by author(s)")
                 out_box.insert(END, "\nUser: ", 'tag1')
             else:
-                insert_outbox_article(title, summary, None)
+                insert_outbox_article(title, summary,  kwords, None)
 
 
 # 3.13 This function inserts an article's summary  to the out_box.
 # Parameter: of an uploading document, summary of the document, a string "by author(s)".
 # Return: none
-def insert_outbox_article(title, summary, aut):
+def insert_outbox_article(title, summary, kw, aut):
     global m
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, f"Summary of the uploaded document {title} {aut}: \n", 'tag4')
     out_box.insert(END, summary)
-    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click enter!", 'tag2')
+    out_box.insert(END, f"\nKeywords  of the uploaded document {title} {aut}: \n", 'tag4')
+    out_box.insert(END, kw)
+    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click 'enter' key!", 'tag2')
     out_box.insert(END, "\nUser:", 'tag1')
     m = 0
 
@@ -182,14 +212,16 @@ def insert_outbox_article(title, summary, aut):
 # 3.13 This function inserts a book's summary  to the out_box.
 # Parameter: the title of an uploading book, a summary for the whole book , each chapter's summary.
 # Return: none
-def insert_outbox_book(title, sumbook,  out_text):
+def insert_outbox_book(title, sumbook, kw, out_text):
     global m
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, f"Summary of the uploaded document {title}:", 'tag4')
     out_box.insert(END, f" \n{sumbook}")
+    out_box.insert(END, f"\nKeywords of the uploaded document {title}:", 'tag4')
+    out_box.insert(END, f" \n{kw}")
     out_box.insert(END, f"\nSummary for each chapter of the uploaded document {title}:", 'tag4')
     out_box.insert(END, f" \n{out_text}")
-    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click enter!", 'tag2')
+    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click 'enter' key!", 'tag2')
     out_box.insert(END, "\nUser:", 'tag1')
     m = 0
 
@@ -549,7 +581,7 @@ def paper2out(text):
     a = ""
     for s in sents:
         if ("University" or "Author" or "@") not in s: a += s
-    sum, kw = get_n_sents(body_text, num_sents(""), k)
+    sum, kw = get_n_sents(body_text, num_sents(""), num_keywords(""))
     summary = sum
     return nsa, a, c, summary, kw
 
@@ -590,14 +622,15 @@ window = create_window("Offline Summary Tool", 'green4', 1086, 800)
 ### 5.Create a textbox  which contains the output text
 # width = 780, height = 208,x=60, y=80,wchar=97, hchar=8
 out_box = scroll_text(998, 188, 26, 26, 127, 30)
-out_box.insert(END, "System: Please enter a desired number summary sentences and click enter!", 'tag2')
+out_box.insert(END, "System: Please enter a desired number summary sentences and click 'enter' key!", 'tag2')
 out_box.insert(END,"\nUser:",'tag1')
-
 out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
 out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
 out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
 out_box.tag_config('tag4', foreground='forest green', font=('Arial', 10, "italic"))
 out_box.bind('<Return>', num_sents)
+out_box.bind('<space>',num_keywords)
+
 
 ### 8. Create a button which a user clicks to upload a file
 buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 10, "bold"),
