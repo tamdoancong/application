@@ -31,9 +31,9 @@ for long documents but its deeply purpose is to  support the equitable deploymen
 Click this link to download it: https://github.com/tamdoancong/offline_summary_app  (Currently, this version needs 329 MB of free disk and just works on Window. Note: In this version, a user have to enter a desired number sentences summary otherwise the app will produce errors. Then a user just need close the app, reopen, and entera desired number sentences summary  )
 Textstar is used for this version. 
 
-### Version 1.0.1 : This version only need 158 MB free space and a user just needs download a single .exe file. This version also only needs a computer to run the app!
-https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
-Since a single file with 158 MB cannot be push to github, google drive was used.
+### Version 1.0.1 : This version only needs 158 MB free space and a user just needs download a single .exe file. This version also only needs a computer to run the app!
+https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS  
+Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used.
 
 Textstar is described in this paper: 
 ```
