@@ -32,9 +32,14 @@ Click this link to download it: https://github.com/tamdoancong/offline_summary_a
 Textstar is used for this version. 
 
 ### Version 1.0.1 : This version only needs 158 MB free space and a user just needs download a single .exe file. This version also only needs a computer to run the app!
-https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS  
-Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. In this version, if a user forgets to enter a desired number of sentences for summary or enters  wierd characters, the app still works well by using default number.
 
+Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. A user can download directly from my Google Drive link:
+
+https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS  
+
+ or a user can click on GitHub link below inorder to get the detail instruction how to download and use this version:
+https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
+In this version, if a user forgets to enter a desired number of sentences for summary or enters  wierd characters, the app still works well by using default number.
 Textstar is described in this paper: 
 ```
 @inproceedings{brock2022textstar,
