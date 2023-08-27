@@ -138,7 +138,7 @@ def get_textFfile(out_box):
                     # Concatenate all chapters' summary form a graph algorithm.
                     out_text += '\n' + e[0] + gM
                 # Insert a summary for a whole book to out_box.
-                insert_outbox_book(title, sumbook, gk, out_text)
+                insert_outbox_book(title, sumbook, out_text)
             # If chapters' structure cannot extract from PDF file.
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
