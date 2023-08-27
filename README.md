@@ -37,7 +37,7 @@ Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was use
 
 https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS  
 
- or a user can click on GitHub link below inorder to get the detail instruction how to download and use this version:
+ or a user can click on my GitHub link below inorder to get the detail instruction how to download and use this version:
 https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 In this version, if a user forgets to enter a desired number of sentences for summary or enters  wierd characters, the app still works well by using default number.
 Textstar is described in this paper: 
