@@ -33,7 +33,7 @@ Textstar is used for this version.
 
 ### Version 1.0.1 : This version only needs 158 MB free space and a user just needs download a single .exe file. This version also only needs a computer to run the app!
 https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS  
-Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used.
+Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. In this version, if a user forgets to enter a desired number of sentences for summary or enters  wierd characters, the app still works well by using default number.
 
 Textstar is described in this paper: 
 ```
