@@ -10,6 +10,7 @@ import os
 import openai
 import socket
 import nltk
+import time
 
 
 # 2. Current working directory
@@ -19,6 +20,8 @@ work_dir = os.getcwd()
 n, k = 5, 5
 # Set global variable for number of sentences and keyphases to extract when internet is available.
 n_sentences, ks = 36, 5
+# Set global variable for number of words in a summary
+nw = 100
 
 
 # 3. All necessary functions
@@ -94,13 +97,16 @@ def upload_file():
 # Return: none
 def enter(event):
     u_text = out_box.get("1.0", "end-1c")
-    if is_internet() and is_on():
+    # print(u_text)
+    if is_key_here() and is_on():
         s_text = chat_API(u_text)
-        s_text = re.sub("System", '', s_text)
+        # time.sleep(3)
+        # s_text = re.sub("System ", '', s_text)
     else:
-        s_text = " Sorry, currently chat function only works when the internet is connected"
+        s_text = " Sorry, currently chat function only works on API mode!"
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, s_text)
+
     out_box.insert(END, "\nUser: ", 'tag1')
 
 
@@ -114,7 +120,7 @@ def getkey(event):
         text2file(key, work_dir + "key.txt")
         insert_keybox("The system got the API key!")
     else:
-        insert_keybox("API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
+        insert_keybox("API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
 
 
 # 3.10 This function tests if a given key works or not.
@@ -166,9 +172,10 @@ def get_textFfile(out_box):
             out_text = ""
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
             if n_pages > 100 and lp != []:
+
                 # If a device is connected to the internet and user choose " API mode"
                 # and a valid OpenAI API key is provided.
-                if is_internet() and is_on() and is_key_here():
+                if is_on() and is_key_here():
                     # For each chapter:
                     for e in lp:
                         # Call the function clean_text() to clean each chapter's text
@@ -176,8 +183,9 @@ def get_textFfile(out_box):
                         # Feeds each chapter's clean text to a graph algorithm and get n_sentences.
                         gM, gk = get_n_sents(chap, n_sentences, ks)
                         # Pass the summary result of TextStar to API model
-                        # and set the output's length (100 tokens).
+                        # and set the output's length (100 words).
                         r_chap = connect_API(gM, 100)
+                        time.sleep(1)
                         # The summary from API model will fix exactly 100 words,
                         # so the last sentence usually will be uncompleted sentence.
                         # This step just get finished sentences.
@@ -186,23 +194,21 @@ def get_textFfile(out_box):
                         # Concatenate all chapters' summary from API
                         out_text += "\n" + e[0] + s_chap + '.' + "\n"
                         # get 200 words summary for a whole book.
-                        APIsumbook = connect_API(out_text, 200)
-                        # Insert the results to the outbox
-                        insert_outbox_book(title, APIsumbook, out_text)
+                    APIsumbook = connect_API(out_text, 200)
+                    time.sleep(1)
+                    # Insert the results to the outbox
+                    insert_outbox_book(title, APIsumbook, out_text)
                 # System works in local mode.
                 else:
-                    # Get number of sentences from sents_box if a user enters.
-                    num = get_sents_box("")
-                    # Otherwise, get a default number.
-                    if num == 0: num = n
                     # Get summary from a graph algorithm for an entire book.
-                    sumbook, gk = get_n_sents(text, num, k)
+                    sumbook, gk = get_n_sents(text, get_sents_box(''), k)
+                    print(f" number of sentence for summary: {get_sents_box('')}")
                     # For each chapter:
                     for e in lp:
                         # Call the function clean_text() to clean each chapter's text.
                         a, c, chap = clean_text(e[1])
                         # Get a summary for each chapter from a graph algorithm.
-                        gM, gk = get_n_sents(chap, num, k)
+                        gM, gk = get_n_sents(chap, get_sents_box(""), k)
                         # print(gM)
                         # Concatenate all chapters' summary form a graph algorithm.
                         out_text += '\n' + e[0] + gM
@@ -228,7 +234,7 @@ def get_textFfile(out_box):
             nsa, a, c, summary = paper2out(text)
             # If a device is connected to the internet and user choose " API mode"
             # and a valid OpenAI API key is provided.
-            if is_internet() and is_on() and is_key_here():
+            if is_on() and is_key_here():
                 insert_outbox_article(title, summary, None)
             # If the system is working in a "Local mode" and a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
@@ -267,7 +273,7 @@ def insert_outbox_book(title, sumbook, out_text):
 # Parameter: none
 # Return: either "API mode!" or "Local mode!"
 def user_know():
-    if is_internet() and is_on() and is_key_here():
+    if is_on() and is_key_here():
         return "API mode!"
     else:
         return "Local mode!"
@@ -322,7 +328,7 @@ def clean_text(text):
     text = re.sub('[\s]+,', ',', text)
     # Remove a string of number which usually is converted from a table from pdf.
     text = re.sub('\n^\d+\.?\d*$\n', '', text)
-    # Remove the lines with a lot numbers which often come from tables.
+    # Remove the lines with a lot numbers which often come from tableges.
     text = re.sub('\n?[\w\s-]*(\s*?[\d]+[.][\d]+-?)+', ' ', text)
     # Replace '..' by '.'.
     text = re.sub('\.\.', '.', text)
@@ -343,7 +349,7 @@ def is_internet():
         if s != None: return True
     except OSError:
         pass
-    insert_keybox("System is in the local mode!")
+    insert_keybox("The system is in the local mode! Please enter the desired number of sentences for the summary, then click the 'Upload a file' button in the bottom right to upload a document to the system!")
     insert_sents_box("Number of summary's sentences:")
     return False
 
@@ -352,18 +358,17 @@ def is_internet():
 # Parameter: text, number words of a summary.
 # Return: either a result summary or an error message.
 def connect_API(n_sentences, m):
-    print(ftext2text(work_dir + "key.txt"))
     openai.api_key = ftext2text(work_dir + "key.txt")
     s_answer = openai.ChatCompletion.create(
         # this model has total 4,097 tokens (input and output)
-        model="gpt-4",
-        max_tokens=m,
-        messages=[
+        model = "gpt-4",
+        # max_tokens = m,
+        messages =[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"Summary:{n_sentences}"}
+            {"role": "user", "content": f"Summary to {m} words:{n_sentences}"}
         ]
     )
-
+    print(f"Connected to API mode")
     return s_answer.choices[0].message['content']
 
 
@@ -677,32 +682,27 @@ def paper2out(text):
     sents = nltk.tokenize.sent_tokenize(a)
     nsa = len(sents)
     a = ""
+    osummary = ""
     for s in sents:
         if ("University" or "Author" or "@") not in s: a += s
-    if is_internet() and is_on():
-        global ws
-        ws = get_sents_box("")
-        if ws == 0:
-            ws = 200
-            # Get M sentences by Textstar
-            gM, gk = get_n_sents(body_text, n_sentences, ks)
-            # Concatenate  the abstract, the conclusion and the M sentences
-            t1 = a + gM + c
-            # and pass result to openAI API model and get the summary.
-            st = connect_API(t1, ws)
-            sents = st.split('.')
-            summary = ".".join(sents[:-1])
-            summary = "\n" + summary + '.'
-            insert_keybox("The system got a working API key!")
+    if is_key_here() and is_on():
+
+        # Get M sentences by Textstar
+        gM, gk = get_n_sents(body_text, n_sentences, ks)
+        # Concatenate  the abstract, the conclusion and the M sentences
+        t1 = a + gM + c
+        # and pass result to openAI API model and get the summary.
+        print(f"num of words: {get_sents_box('')}")
+        st = connect_API(t1, get_sents_box(""))
+        # time.sleep(10)
+        sents = st.split('.')
+        summary = ".".join(sents[:-1])
+        osummary += "\n" + summary + '.'
     # If internet is not available
     else:
-        global num
-        num = get_sents_box("")
-        if num == 0:
-            num = n
-            sum, kw = get_n_sents(body_text, num, k)
-            summary = sum
-    return nsa, a, c, summary
+        sum, kw = get_n_sents(body_text, get_sents_box(""), k)
+        osummary += sum
+    return nsa, a, c, osummary
 
 
 # 3.29 This function checks a file is PDF or not
@@ -734,15 +734,25 @@ def on_off():
         # When a user clicks the left button, the left button will change to "API mode".
         buttonL.config(text = "API mode")
         # Insert the text below to key_box.
-        insert_keybox("API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
+        insert_keybox("API mode needs: 1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
         # Insert the text below to sents_box.
         insert_sents_box("Number of summary's words:")
+        if not is_internet():
+            out_box.insert(END, "\nSystem: ", 'tag2')
+            out_box.insert(END,"The internet is not currently connected. Please connect your device to the internet if you want to use the API mode!")
+            out_box.insert(END, "\nUser: ", 'tag1')
+        if is_internet() and not is_key_here():
+            out_box.insert(END, "\nSystem: ", 'tag2')
+            out_box.insert(END, "Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Enter' if you want to use the API mode!")
+            out_box.insert(END, "\nUser: ", 'tag1')
+
+
     # If the left button shows "API mode":
     else:
         # When a user clicks the left button, the left button will change to "Local mode".
         buttonL.config(text = "Local mode")
         # Insert the text below to sents_box.
-        insert_keybox("System is in the local mode!")
+        insert_keybox("The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
         # Insert the text below to sents_box.
         insert_sents_box("Number of summary's sentences:")
 
@@ -772,27 +782,31 @@ def upload_key():
         if testkey(key):
             text2file(key, work_dir + "key.txt")
             print(f" key was saved at {work_dir}\key.txt")
-            insert_keybox("The system got a working API key!")
+            insert_keybox("The system got a working API key")
+            # insert_keybox("The API mode is ready to use! You can  start a chat with the system or enter a desired number of words for a summary into the top right corner box, then click the 'Upload a File' button!")
         else:
             insert_keybox(
-                "API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
+                "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
         return file
     else:
         insert_keybox(
-            "API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
+            "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Enter:")
 
 # 3.35 This function counts checks if the provided key is valid or not.
 # Parameter: none.
 # Return : True or False.
 def is_key_here():
-    key = ftext2text(work_dir + "key.txt")
-    if testkey(key):
-        insert_keybox("The system got a working API key!")
-        return True
+    if not os.path.exists(work_dir + "key.txt"): return False
     else:
-        insert_keybox(
-            "API mode needs: 1/Connect  your device to the internet; 2/The left button is 'API mode'; 3/Click the middle button to upload your OpenAI API key file or enter your key after the colon and click 'Enter':")
-    return False
+        key = ftext2text(work_dir + "key.txt")
+        if testkey(key):
+            insert_keybox("API mode is ready to use! You can  start a chat with the system or enter a desired number of words for the summary into the top right corner box, click the 'Upload a File' button !")
+            # out_box.insert(END,"User: ", 'tag1')# make User: appears after chat question
+            return True
+        else:
+            insert_keybox(
+                "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
+            return False
 
 
 def insert_keybox(message):
@@ -803,7 +817,7 @@ def insert_keybox(message):
 
 def insert_sents_box(message):
     sents_box.delete('1.0', END)
-    sents_box.insert(END, f"{message}")
+    sents_box.insert('1.0', f"{message}",END)
     sents_box.see(END)
 
 
@@ -815,46 +829,59 @@ def num_sents(event):
 ws = 0
 num = 0
 def get_sents_box(event):
+    global num, ws
     t = sents_box.get("1.0", "end-1c")
-    if is_on():
+    # print(len(t))
+    # print(f" sentence box: {t}")
+    if not is_on():
+        r = re.findall("[^0-9]*", t[30:])
+        if r == [''] or r[0] != '':
+            num = n
+            # print(f"number of sentence: {num}")
+            return num
+
+        else: return num2int(t[30:])
+    else:
     # number of words
         r = re.findall("[^0-9]*", t[26:])
         if r ==[''] or r[0] != '':
-            return 0
+            ws = nw
+            return ws
         else:
-            return int(t[26:].strip())
-    else:
-    #num of sentences
+            return num2int(t[26:])
 
-        r = re.findall("[^0-9]*", t[30:])
-        if r ==[''] or r[0] != '':
-            return 0
-        else:
-            return int(t[30:].strip())
-            print(f"number of sentences {t[30:]}")
+# This function cleans space, newline, and converts an input string number to an integer
+def num2int(num):
+    num = num.strip()
+    num = num.replace(" ", "")
+    num = num.replace("\n", "")
+    num = int(num)
+    return num
 
 
 ### 3.Call the function to create a withow with the specific title, color, and size
 window = create_window("Fun Chat", 'green4', 1086, 800)
 
-key_box = Text(window, width=108, height=2, fg='forest green')
-key_box.place(x=26, y=8)
-key_box.insert(END, "System is currently in local mode!")
+key_box = Text(window, width = 108, height = 2, fg = 'forest green')
+key_box.place(x = 26, y = 8)
+key_box.insert(END, "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
 key_box.bind('<Return>', getkey)
 
-sents_box = Text(window, width=19, height=2, fg='forest green')
-sents_box.place(x=900, y=8)
+sents_box = Text(window, width = 19, height = 2, wrap = WORD, fg = 'forest green')
+sents_box.place(x = 900, y = 8)
 sents_box.insert(END, "Number of summary's sentences:")
 sents_box.bind('<Return>', get_sents_box)
 
 ### 5.Create a textbox  which contains the output text
 # width = 780, height = 208,x=60, y=80,wchar=97, hchar=8
 out_box = scroll_text(998, 188, 26, 50, 126, 28)
-out_box.insert(END, "User: ", 'tag1')
 out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
 out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
 out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
 out_box.tag_config('tag4', foreground='forest green', font=('Arial', 10, "italic"))
+out_box.insert(END, "System: " ,'tag2')
+out_box.insert(END,"Hello! How are you doing  today? Please start a chat with me by typing your words after 'User:', or enter a desired \nnumber of (sentences) words for a summary into the top right corner box, then click the 'Upload a File' button in the \nbottom-right to upload a document for summary! ")
+out_box.insert(END,"\nUser: ",'tag1')
 out_box.bind('<Return>', enter)
 text = out_box.get("1.0", END)
 # print(f"text outbox: {text}")
