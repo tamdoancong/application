@@ -1,4 +1,4 @@
-# 1.Import all necessary libraries
+# 1. Import all necessary libraries
 from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 from PyPDF2 import PdfReader, generic
@@ -15,7 +15,8 @@ import time
 
 # 2. Current working directory
 work_dir = os.getcwd()
-# print(work_dir)
+
+# 3. Set global variable
 # Set global variable for number of sentences and keyphases to extract when internet is not available.
 n, k = 5, 5
 # Set global variable for number of sentences and keyphases to extract when internet is available.
@@ -24,43 +25,43 @@ n_sentences, ks = 36, 5
 nw = 100
 
 
-# 3. All necessary functions
-# 3.1 This function creates a window with desired title, color, and size.
+# 4. All necessary functions
+# 4.1 This function creates a window with desired title, color, and size.
 def create_window(title, color, w, h):
     # Creat a window
     wd = Tk()
     # Write a title of the window
     wd.title("Summary for Long Document and Fun Chat  ")
     # Set the minimum size of the window when window appears
-    wd.minsize(width=w, height=h)
+    wd.minsize(width = w, height = h)
     # Set the background color for the window
-    wd.configure(bg=color)
+    wd.configure(bg = color)
     return wd
 
 
-# 3.2 This function creates a canvas
+# 4.2 This function creates a canvas
 # Parameters: window: what window the canvas will be put in, color, width, height,
 #x: how many pixels from the left of the window,  y: how many pixels from the top of the window
 def create_canvas(window, color, w, h, x, y):
-    c = Canvas(window, bg=color, width=w, height=h)
-    c.place(x=x, y=y)
+    c = Canvas(window, bg = color, width = w, height = h)
+    c.place(x = x, y = y)
     return c
 
 
-# 3.3 This function creates a textbox with scroll bar
+# 4.3 This function creates a textbox with scroll bar
 # Parameters: width (pixels); height (pixels);
 # x: how many pixels from the left of the window,  y: how many pixels from the top of the window
 # wchar:number characters can be inserted for each row; hchar: number characters can be inserted for each column
 def scroll_text(w, h, x, y, wchar, hchar):
     # Create a frame in the window
-    frame = Frame(window, width=w, height=h)
-    frame.place(x=x, y=y)
-    text_box = ScrolledText(frame, width=wchar, height=hchar)
-    text_box.pack(fill=BOTH, expand=1)
+    frame = Frame(window, width = w, height = h)
+    frame.place(x = x, y = y)
+    text_box = ScrolledText(frame, width = wchar, height = hchar)
+    text_box.pack(fill = BOTH, expand = 1)
     return text_box
 
 
-# 3.4 This function gets the text from a PDF file.
+# 4.4 This function gets the text from a PDF file.
 # Parameter: file path
 # Return: number of pages; either an empty list or a list of pairs of each chapter's number and
 # its correlated text; the text  which was extracted from the PDF file.
@@ -74,24 +75,24 @@ def pdf2text(pdf_file):
     return n_pages, lp, text
 
 
-# 3.5 This function gets the text from a text file.
+# 4.5 This function gets the text from a text file.
 # Parameter: file path
 # Return: text
 def ftext2text(file):
-    with open(file, 'r', encoding="utf-8") as f:
+    with open(file, 'r', encoding = "utf-8") as f:
         text = f.read()
     return text
 
 
-# 3.6 This function uploads a file ( PDF or txt) and returns the absolute path of a file.
+# 4.6 This function uploads a file ( PDF or txt) and returns the absolute path of a file.
 # Parameter: none
 # Return: file path
 def upload_file():
-    fname = filedialog.askopenfilename(filetypes=[('PDF Files', '*.pdf'), ('Text Files', '*.txt')])
+    fname = filedialog.askopenfilename(filetypes = [('PDF Files', '*.pdf'), ('Text Files', '*.txt')])
     return fname
 
 
-# 3.8 This function gets a user's question and feeds that to chat_API() function
+# 4.7 This function gets a user's question and feeds that to chat_API() function
 # then gets the answer and insert it to out_box.
 # Parameter: Click the Enter key on the  keyboard after finishing enter a question.
 # Return: none
@@ -106,32 +107,47 @@ def enter(event):
         s_text = " Sorry, currently chat function only works on API mode!"
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, s_text)
-
     out_box.insert(END, "\nUser: ", 'tag1')
 
 
-# 3.9 This function gets the API key from the key box if a user enter a API key.
-# Parameter: Click the Enter key on the  keyboard after finishing enter a API key.
+# 4.8 This function gets the API key from the key box if a user enter an API key.
+# Parameter: Click the Enter key on the  keyboard after finishing enter an API key.
 def getkey(event):
     text = key_box.get('1.0', "end-1c")
-    key = text[46:]
+    key = text[178:]
+    # print(key)
     key = key.strip()
+    key = key.replace(" ","")
     if testkey(key):
         text2file(key, work_dir + "key.txt")
-        insert_keybox("The system got the API key!")
+        insert_keybox("The system got the API key! Please pick an API model from this list [gpt-4,gpt-3.5-turbo] then type model's name into this box:")
     else:
-        insert_keybox("API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
+        insert_keybox("API mode needs: 1/The internet is connected 2/The left button is ‘API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
+
+def set_api_model(event):
+    text = key_box.get('1.0', "end-1c")
+    model = text[127:]
+    print(model)
+    model = model.strip()
+    model = model.replace(" ","")
+    if testmodel(model):
+        insert_keybox(f"The system is working on {model}. API mode is ready to use! ")
+        return model
+    else:
+        f"The  entered model has problem. The system will use GPT 4 model "
 
 
-# 3.10 This function tests if a given key works or not.
+
+
+# 4.9 This function checks if a given key works or not.
 # Parameter: key.
 # Return: either True or False.
 def testkey(key):
     try:
         openai.api_key = key
         ans = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
+            model = "gpt-4",
+            messages = [
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": "Who is president of US?"}
             ]
@@ -143,7 +159,24 @@ def testkey(key):
     return False
 
 
-# 3.11 This function writes down a string to a file.
+def testmodel(model):
+    try:
+        openai.api_key = ftext2text(work_dir + "key.txt")
+        ans = openai.ChatCompletion.create(
+            model = f"{model}",
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": "Who is president of US?"}
+            ]
+        )
+        if ans.choices[0].message['content'] != "": return True
+    except:
+        OSError
+    pass
+    return False
+
+
+# 4.10 This function writes down a string to a text file.
 # Parameter: a string, file path with new name
 # Return: none
 def text2file(text, file):
@@ -151,9 +184,9 @@ def text2file(text, file):
         f.write(text)
 
 
-# 3.12 This function gets an input text from the uploaded file.
+# 4.11 This function gets an input text from the uploaded file.
 # Parameter: out_box
-# Return:
+# Return: None
 def get_textFfile(out_box):
     # Clean the output textbox
     if count_words(out_box) > 1000: out_box.delete("1.0", END)
@@ -163,10 +196,10 @@ def get_textFfile(out_box):
     if fname == "":
         pass
     else:
-        # If the uploading file is pdf, convert to a string
         title = get_info(fname)
+        # If the uploading file is pdf,
         if is_pdf(fname):
-            # convert pdf file to text
+            # convert to a string
             n_pages, lp, text = pdf2text(fname)
             # print(f" lp: {lp}")
             out_text = ""
@@ -183,26 +216,26 @@ def get_textFfile(out_box):
                         # Feeds each chapter's clean text to a graph algorithm and get n_sentences.
                         gM, gk = get_n_sents(chap, n_sentences, ks)
                         # Pass the summary result of TextStar to API model
-                        # and set the output's length (100 words).
-                        r_chap = connect_API(gM, 100)
+                        # and set the output's words = get_sents_box('').
+                        r_chap = connect_API(gM, get_sents_box(''))
                         time.sleep(1)
-                        # The summary from API model will fix exactly 100 words,
+                        # The summary from API model will fix  a number of words,
                         # so the last sentence usually will be uncompleted sentence.
                         # This step just get finished sentences.
                         sents = r_chap.split('.')
                         s_chap = ".".join(sents[:-1])
                         # Concatenate all chapters' summary from API
                         out_text += "\n" + e[0] + s_chap + '.' + "\n"
-                        # get 200 words summary for a whole book.
-                    APIsumbook = connect_API(out_text, 200)
+                        # get a desired number of words for a summary for a whole book.
+                    APIsumbook = connect_API(out_text, get_sents_box(''))
                     time.sleep(1)
                     # Insert the results to the outbox
-                    insert_outbox_book(title, APIsumbook, out_text)
+                    insert_outbox_book(title, APIsumbook, out_text, n_pages)
                 # System works in local mode.
                 else:
                     # Get summary from a graph algorithm for an entire book.
                     sumbook, gk = get_n_sents(text, get_sents_box(''), k)
-                    print(f" number of sentence for summary: {get_sents_box('')}")
+                    # print(f" number of sentence for summary: {get_sents_box('')}")
                     # For each chapter:
                     for e in lp:
                         # Call the function clean_text() to clean each chapter's text.
@@ -210,10 +243,10 @@ def get_textFfile(out_box):
                         # Get a summary for each chapter from a graph algorithm.
                         gM, gk = get_n_sents(chap, get_sents_box(""), k)
                         # print(gM)
-                        # Concatenate all chapters' summary form a graph algorithm.
-                        out_text += '\n' + e[0] + gM
+                        # Concatenate all chapters' summary from a graph algorithm.
+                        out_text += '\n' + e[0] + gM + "\n"
                     # Insert a summary for a whole book to out_box.
-                    insert_outbox_book(title, sumbook, out_text)
+                    insert_outbox_book(title, sumbook, out_text, n_pages)
             # If chapters' structure cannot extract from PDF file.
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
@@ -222,36 +255,37 @@ def get_textFfile(out_box):
                 # and the desired number of summary's sentences less than number sentences in a.
                 if a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
                     # Insert title and a to out_box.
-                    insert_outbox_article(title, a, "by author(s)")
+                    insert_outbox_article(title, a, "by author(s)", n_pages)
                 else:
                     # Insert title and summary to out_box.
-                    insert_outbox_article(title, summary, "")
+                    insert_outbox_article(title, summary, "", n_pages)
         # If an uploading file is a txt file,
         if is_txt(fname):
             # convert the file to a string.
             text = ftext2text(fname)
             # Call function paper2out(text) to process the string
             nsa, a, c, summary = paper2out(text)
-            # If a device is connected to the internet and user choose " API mode"
-            # and a valid OpenAI API key is provided.
+            # If API mode is  working:
             if is_on() and is_key_here():
-                insert_outbox_article(title, summary, None)
-            # If the system is working in a "Local mode" and a is not an empty string
+                insert_outbox_article(title, summary, None, None)
+            # If  "Local mode" is working and a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
             elif a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
-                insert_outbox_article(title, a, " by author(s)")
+                insert_outbox_article(title, a, " by author(s)", None)
                 out_box.insert(END, "\nUser: ", 'tag1')
             else:
-                insert_outbox_article(title, summary, None)
+                insert_outbox_article(title, summary, None, None)
 
 
 # 3.13 This function inserts an article's summary  to the out_box.
 # Parameter: of an uploading document, summary of the document, a string "by author(s)".
 # Return: none
-def insert_outbox_article(title, summary, aut):
+def insert_outbox_article(title, summary, aut, n):
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, f"{user_know()} ", 'tag3')
-    out_box.insert(END, f"Summary of the Uploaded Document {title} {aut}: \n", 'tag4')
+    out_box.insert(END, f"Summary of the uploaded {n}-page document ", 'tag4')
+    out_box.insert(END, f"{title}", 'tag5')
+    out_box.insert(END,f" {aut}:\n", 'tag4')
     out_box.insert(END, summary)
     out_box.insert(END, "\nUser: ", 'tag1')
 
@@ -259,12 +293,14 @@ def insert_outbox_article(title, summary, aut):
 # 3.13 This function inserts a book's summary  to the out_box.
 # Parameter: the title of an uploading book, a summary for the whole book , each chapter's summary.
 # Return: none
-def insert_outbox_book(title, sumbook, out_text):
+def insert_outbox_book(title, sumbook, out_text, p):
     out_box.insert(END, "\nSystem: ", 'tag2')
     out_box.insert(END, f"{user_know()} ", 'tag3')
-    out_box.insert(END, f"Summary of the Uploaded Document {title}:", 'tag4')
+    out_box.insert(END, f"Summary of the uploaded {p}-page document ", 'tag4')
+    out_box.insert(END, f"{title}:", 'tag5')
     out_box.insert(END, f" \n{sumbook}")
-    out_box.insert(END, f"\nSummary for each chapter of the Uploaded Document {title}:", 'tag4')
+    out_box.insert(END, f"\nSummary for each chapter of the Uploaded Document: ", 'tag4')
+    out_box.insert(END, f"{title}:", 'tag5')
     out_box.insert(END, f" \n{out_text}")
     out_box.insert(END, "\nUser: ", 'tag1')
 
@@ -879,6 +915,8 @@ out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
 out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
 out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
 out_box.tag_config('tag4', foreground='forest green', font=('Arial', 10, "italic"))
+out_box.tag_config('tag5', foreground='brown4', font=('Arial', 10, "italic"))
+
 out_box.insert(END, "System: " ,'tag2')
 out_box.insert(END,"Hello! How are you doing  today? Please start a chat with me by typing your words after 'User:', or enter a desired \nnumber of (sentences) words for a summary into the top right corner box, then click the 'Upload a File' button in the \nbottom-right to upload a document for summary! ")
 out_box.insert(END,"\nUser: ",'tag1')
