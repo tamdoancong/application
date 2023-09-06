@@ -11,6 +11,7 @@ import openai
 import socket
 import nltk
 import time
+import threading
 
 
 # 2. Current working directory
@@ -56,7 +57,7 @@ def scroll_text(w, h, x, y, wchar, hchar):
     # Create a frame in the window
     frame = Frame(window, width = w, height = h)
     frame.place(x = x, y = y)
-    text_box = ScrolledText(frame, width = wchar, height = hchar)
+    text_box = ScrolledText(frame,width = wchar, height = hchar)
     text_box.pack(fill = BOTH, expand = 1)
     return text_box
 
@@ -114,23 +115,27 @@ def enter(event):
 # Parameter: Click the Enter key on the  keyboard after finishing enter an API key.
 def getkey(event):
     text = key_box.get('1.0', "end-1c")
-    key = text[178:]
-    # print(key)
+    key = text[-51:]
     key = key.strip()
     key = key.replace(" ","")
+    key = key.replace("\n", "")
+    print(key)
     if testkey(key):
-        text2file(key, work_dir + "key.txt")
-        insert_keybox("The system got the API key! Please pick an API model from this list [gpt-4,gpt-3.5-turbo] then type model's name into this box:")
+        if os.path.exists(work_dir + "\\key.txt"): os.remove(work_dir + "\\key.txt")
+        text2file(key, work_dir + "\\key.txt")
+        insert_keybox("The system got the API key! Please: 1.Type an OpenAI API model's name(ex: gpt-4,gpt-3.5-turbo,...) into this box 2. Click 'Return' key:")
     else:
-        insert_keybox("API mode needs: 1/The internet is connected 2/The left button is ‘API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
+        insert_keybox("Please enter a working OpenAI API key and click 'Right arrow' key!")
+
 
 def set_api_model(event):
     text = key_box.get('1.0', "end-1c")
-    model = text[127:]
+    model = text[135:]
     print(model)
     model = model.strip()
     model = model.replace(" ","")
     if testmodel(model):
+        text2file(model, work_dir + "\\model.txt")
         insert_keybox(f"The system is working on {model}. API mode is ready to use! ")
         return model
     else:
@@ -149,7 +154,7 @@ def testkey(key):
             model = "gpt-4",
             messages = [
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": "Who is president of US?"}
+                {"role": "user", "content": "Can you help me?"}
             ]
         )
         if ans.choices[0].message['content'] != "": return True
@@ -161,12 +166,12 @@ def testkey(key):
 
 def testmodel(model):
     try:
-        openai.api_key = ftext2text(work_dir + "key.txt")
+        openai.api_key = ftext2text(work_dir + "\\key.txt")
         ans = openai.ChatCompletion.create(
             model = f"{model}",
             messages = [
                 {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": "Who is president of US?"}
+                {"role": "user", "content": "How are you?"}
             ]
         )
         if ans.choices[0].message['content'] != "": return True
@@ -394,29 +399,34 @@ def is_internet():
 # Parameter: text, number words of a summary.
 # Return: either a result summary or an error message.
 def connect_API(n_sentences, m):
-    openai.api_key = ftext2text(work_dir + "key.txt")
+    if os.path.exists(work_dir+ "\\model.txt"): run_model = ftext2text(work_dir+ "\\model.txt")
+    else: run_model = "gpt-4"
+    openai.api_key = ftext2text(work_dir + "\\key.txt")
     s_answer = openai.ChatCompletion.create(
-        # this model has total 4,097 tokens (input and output)
-        model = "gpt-4",
+        model = run_model,
         # max_tokens = m,
         messages =[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"Summary to {m} words:{n_sentences}"}
         ]
     )
-    print(f"Connected to API mode")
+    print(f"Current API  model {run_model}")
     return s_answer.choices[0].message['content']
 
 
+def connect_API_thread():
+    thread = threading.Thread(target = connect_API)
+    thread.start()
 # 3.19 This function connects to OpenAI API model.
 # Parameter: a prompt.
 # Return: either an answer for a prompt or an error message.
 def chat_API(uq):
-    openai.api_key = ftext2text(work_dir + "key.txt")
-
+    if os.path.exists(work_dir+ "\\model.txt"): run_model = ftext2text(work_dir+ "\\model.txt")
+    else: run_model = "gpt-4"
+    openai.api_key = ftext2text(work_dir + "\\key.txt")
     answer = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
+        model = run_model,
+        messages = [
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"{uq}"}
         ]
@@ -770,7 +780,7 @@ def on_off():
         # When a user clicks the left button, the left button will change to "API mode".
         buttonL.config(text = "API mode")
         # Insert the text below to key_box.
-        insert_keybox("API mode needs: 1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
+        insert_keybox("API mode needs: 1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
         # Insert the text below to sents_box.
         insert_sents_box("Number of summary's words:")
         if not is_internet():
@@ -816,25 +826,25 @@ def upload_key():
     if is_txt(file):
         key = ftext2text(file)
         if testkey(key):
-            text2file(key, work_dir + "key.txt")
+            text2file(key, work_dir + "\\key.txt")
             print(f" key was saved at {work_dir}\key.txt")
             insert_keybox("The system got a working API key")
             # insert_keybox("The API mode is ready to use! You can  start a chat with the system or enter a desired number of words for a summary into the top right corner box, then click the 'Upload a File' button!")
         else:
             insert_keybox(
-                "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Enter:")
+                "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
         return file
     else:
         insert_keybox(
-            "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Enter:")
+            "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
 
 # 3.35 This function counts checks if the provided key is valid or not.
 # Parameter: none.
 # Return : True or False.
 def is_key_here():
-    if not os.path.exists(work_dir + "key.txt"): return False
+    if not os.path.exists(work_dir + "\\key.txt"): return False
     else:
-        key = ftext2text(work_dir + "key.txt")
+        key = ftext2text(work_dir + "\\key.txt")
         if testkey(key):
             insert_keybox("API mode is ready to use! You can  start a chat with the system or enter a desired number of words for the summary into the top right corner box, click the 'Upload a File' button !")
             # out_box.insert(END,"User: ", 'tag1')# make User: appears after chat question
@@ -848,7 +858,7 @@ def is_key_here():
 def insert_keybox(message):
     key_box.delete('1.0', END)
     key_box.insert(END, f"{message}")
-    key_box.see(END)
+    key_box.see('0.0')
 
 
 def insert_sents_box(message):
@@ -901,7 +911,8 @@ window = create_window("Fun Chat", 'green4', 1086, 800)
 key_box = Text(window, width = 108, height = 2, fg = 'forest green')
 key_box.place(x = 26, y = 8)
 key_box.insert(END, "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
-key_box.bind('<Return>', getkey)
+key_box.bind('<Right>', getkey)
+key_box.bind('<Return>',set_api_model)
 
 sents_box = Text(window, width = 19, height = 2, wrap = WORD, fg = 'forest green')
 sents_box.place(x = 900, y = 8)
