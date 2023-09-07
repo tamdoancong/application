@@ -190,9 +190,9 @@ def get_textFfile(out_box):
     if fname == "":
         pass
     else:
-        title = get_info(fname)
         # If the uploading file is pdf,
         if is_pdf(fname):
+            title = get_info(fname)
             # convert to a string
             n_pages, lp, text = pdf2text(fname)
             # print(f" lp: {lp}")
@@ -256,14 +256,14 @@ def get_textFfile(out_box):
             nsa, a, c, summary = paper2out(text)
             # If API mode is  working:
             if is_on() and is_key_here():
-                insert_outbox_article(title, summary, None, None)
+                insert_outbox_article("", summary, "", "")
             # If  "Local mode" is working and a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
             elif a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
-                insert_outbox_article(title, a, " by author(s)", None)
+                insert_outbox_article("", a, " by author(s)", "")
                 out_box.insert(END, "\nUser: ", 'tag1')
             else:
-                insert_outbox_article(title, summary, None, None)
+                insert_outbox_article("", summary, "", "")
 
 
 # 4.13 This function inserts an article's summary  to the out_box.
@@ -393,7 +393,6 @@ def connect_API(n_sentences, m):
             {"role": "user", "content": f"Summary to {m} words:{n_sentences}"}
         ]
     )
-    print(f"Current API  model {run_model}")
     return s_answer.choices[0].message['content']
 
 
