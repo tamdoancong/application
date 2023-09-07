@@ -10,7 +10,6 @@ import os
 import openai
 import socket
 import nltk
-import time
 import threading
 
 
@@ -21,7 +20,7 @@ work_dir = os.getcwd()
 # Set global variable for number of sentences and keyphases to extract when internet is not available.
 n, k = 5, 5
 # Set global variable for number of sentences and keyphases to extract when internet is available.
-n_sentences, ks = 36, 5
+n_sentences, ks = 66, 5
 # Set global variable for number of words in a summary
 nw = 100
 
@@ -40,16 +39,7 @@ def create_window(title, color, w, h):
     return wd
 
 
-# 4.2 This function creates a canvas
-# Parameters: window: what window the canvas will be put in, color, width, height,
-#x: how many pixels from the left of the window,  y: how many pixels from the top of the window
-def create_canvas(window, color, w, h, x, y):
-    c = Canvas(window, bg = color, width = w, height = h)
-    c.place(x = x, y = y)
-    return c
-
-
-# 4.3 This function creates a textbox with scroll bar
+# 4.2 This function creates a textbox with scroll bar
 # Parameters: width (pixels); height (pixels);
 # x: how many pixels from the left of the window,  y: how many pixels from the top of the window
 # wchar:number characters can be inserted for each row; hchar: number characters can be inserted for each column
@@ -62,21 +52,20 @@ def scroll_text(w, h, x, y, wchar, hchar):
     return text_box
 
 
-# 4.4 This function gets the text from a PDF file.
+# 4.3 This function gets the text from a PDF file.
 # Parameter: file path
 # Return: number of pages; either an empty list or a list of pairs of each chapter's number and
 # its correlated text; the text  which was extracted from the PDF file.
 def pdf2text(pdf_file):
     reader = PdfReader(pdf_file)
     n_pages = len(reader.pages)
-    print(f" number of pages: {n_pages}")
     lp = extract_chapter_pdf(reader)
     text = extract_text(0, n_pages, reader)
     if lp == []: lp = get_chapters_text(text)
     return n_pages, lp, text
 
 
-# 4.5 This function gets the text from a text file.
+# 4.4 This function gets the text from a text file.
 # Parameter: file path
 # Return: text
 def ftext2text(file):
@@ -85,7 +74,7 @@ def ftext2text(file):
     return text
 
 
-# 4.6 This function uploads a file ( PDF or txt) and returns the absolute path of a file.
+# 4.5 This function uploads a file ( PDF or txt) and returns the absolute path of a file.
 # Parameter: none
 # Return: file path
 def upload_file():
@@ -93,17 +82,14 @@ def upload_file():
     return fname
 
 
-# 4.7 This function gets a user's question and feeds that to chat_API() function
+# 4.6 This function gets a user's question and feeds that to chat_API() function
 # then gets the answer and insert it to out_box.
 # Parameter: Click the Enter key on the  keyboard after finishing enter a question.
 # Return: none
 def enter(event):
     u_text = out_box.get("1.0", "end-1c")
-    # print(u_text)
     if is_key_here() and is_on():
         s_text = chat_API(u_text)
-        # time.sleep(3)
-        # s_text = re.sub("System ", '', s_text)
     else:
         s_text = " Sorry, currently chat function only works on API mode!"
     out_box.insert(END, "\nSystem: ", 'tag2')
@@ -111,15 +97,15 @@ def enter(event):
     out_box.insert(END, "\nUser: ", 'tag1')
 
 
-# 4.8 This function gets the API key from the key box if a user enter an API key.
-# Parameter: Click the Enter key on the  keyboard after finishing enter an API key.
+# 4.7 This function gets the API key from the key box if a user enter an API key.
+# Parameter: Click the 'Right arrow' key on the  keyboard .
+# # Return: none
 def getkey(event):
     text = key_box.get('1.0', "end-1c")
     key = text[-51:]
     key = key.strip()
     key = key.replace(" ","")
     key = key.replace("\n", "")
-    print(key)
     if testkey(key):
         if os.path.exists(work_dir + "\\key.txt"): os.remove(work_dir + "\\key.txt")
         text2file(key, work_dir + "\\key.txt")
@@ -128,10 +114,12 @@ def getkey(event):
         insert_keybox("Please enter a working OpenAI API key and click 'Right arrow' key!")
 
 
+# 4.8 This function get an API model from the key box if a user enter it.
+# Parameter: Click the 'Return' key on the  keyboard .
+# Return: model
 def set_api_model(event):
     text = key_box.get('1.0', "end-1c")
     model = text[135:]
-    print(model)
     model = model.strip()
     model = model.replace(" ","")
     if testmodel(model):
@@ -140,8 +128,6 @@ def set_api_model(event):
         return model
     else:
         f"The  entered model has problem. The system will use GPT 4 model "
-
-
 
 
 # 4.9 This function checks if a given key works or not.
@@ -164,6 +150,9 @@ def testkey(key):
     return False
 
 
+# 4.10 This function checks if an entered model  works or not
+# Parameter: model
+# Return: either True or False.
 def testmodel(model):
     try:
         openai.api_key = ftext2text(work_dir + "\\key.txt")
@@ -181,7 +170,7 @@ def testmodel(model):
     return False
 
 
-# 4.10 This function writes down a string to a text file.
+# 4.11 This function writes down a string to a text file.
 # Parameter: a string, file path with new name
 # Return: none
 def text2file(text, file):
@@ -189,7 +178,7 @@ def text2file(text, file):
         f.write(text)
 
 
-# 4.11 This function gets an input text from the uploaded file.
+# 4.12 This function gets an input text from the uploaded file.
 # Parameter: out_box
 # Return: None
 def get_textFfile(out_box):
@@ -210,7 +199,6 @@ def get_textFfile(out_box):
             out_text = ""
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
             if n_pages > 100 and lp != []:
-
                 # If a device is connected to the internet and user choose " API mode"
                 # and a valid OpenAI API key is provided.
                 if is_on() and is_key_here():
@@ -223,34 +211,30 @@ def get_textFfile(out_box):
                         # Pass the summary result of TextStar to API model
                         # and set the output's words = get_sents_box('').
                         r_chap = connect_API(gM, get_sents_box(''))
-                        time.sleep(1)
                         # The summary from API model will fix  a number of words,
                         # so the last sentence usually will be uncompleted sentence.
                         # This step just get finished sentences.
                         sents = r_chap.split('.')
                         s_chap = ".".join(sents[:-1])
                         # Concatenate all chapters' summary from API
-                        out_text += "\n" + e[0] + s_chap + '.' + "\n"
-                        # get a desired number of words for a summary for a whole book.
+                        out_text += "\n" + e[0] +": "+ s_chap + '.' + "\n"
+                        # get a summary for a whole book.
                     APIsumbook = connect_API(out_text, get_sents_box(''))
-                    time.sleep(1)
                     # Insert the results to the outbox
                     insert_outbox_book(title, APIsumbook, out_text, n_pages)
                 # System works in local mode.
                 else:
                     # Get summary from a graph algorithm for an entire book.
                     sumbook, gk = get_n_sents(text, get_sents_box(''), k)
-                    # print(f" number of sentence for summary: {get_sents_box('')}")
                     # For each chapter:
                     for e in lp:
                         # Call the function clean_text() to clean each chapter's text.
                         a, c, chap = clean_text(e[1])
                         # Get a summary for each chapter from a graph algorithm.
                         gM, gk = get_n_sents(chap, get_sents_box(""), k)
-                        # print(gM)
                         # Concatenate all chapters' summary from a graph algorithm.
                         out_text += '\n' + e[0] + gM + "\n"
-                    # Insert a summary for a whole book to out_box.
+                    # Insert the result to out_box.
                     insert_outbox_book(title, sumbook, out_text, n_pages)
             # If chapters' structure cannot extract from PDF file.
             else:
@@ -282,8 +266,8 @@ def get_textFfile(out_box):
                 insert_outbox_article(title, summary, None, None)
 
 
-# 3.13 This function inserts an article's summary  to the out_box.
-# Parameter: of an uploading document, summary of the document, a string "by author(s)".
+# 4.13 This function inserts an article's summary  to the out_box.
+# Parameter: title of an uploading document, summary of the document, a string "by author(s)", total pages of an uploading document.
 # Return: none
 def insert_outbox_article(title, summary, aut, n):
     out_box.insert(END, "\nSystem: ", 'tag2')
@@ -295,8 +279,8 @@ def insert_outbox_article(title, summary, aut, n):
     out_box.insert(END, "\nUser: ", 'tag1')
 
 
-# 3.13 This function inserts a book's summary  to the out_box.
-# Parameter: the title of an uploading book, a summary for the whole book , each chapter's summary.
+# 4.14 This function inserts a book's summary  to the out_box.
+# Parameter: the title of an uploading book, a summary for the whole book , each chapter's summary,total pages of an uploading document.
 # Return: none
 def insert_outbox_book(title, sumbook, out_text, p):
     out_box.insert(END, "\nSystem: ", 'tag2')
@@ -310,7 +294,7 @@ def insert_outbox_book(title, sumbook, out_text, p):
     out_box.insert(END, "\nUser: ", 'tag1')
 
 
-# 3.14 This function checks which mode the system is currently working.
+# 4.15 This function checks which mode the system is currently working.
 # Parameter: none
 # Return: either "API mode!" or "Local mode!"
 def user_know():
@@ -320,7 +304,7 @@ def user_know():
         return "Local mode!"
 
 
-# 3.15 This function gets n sentences from a long document by a graph based algorithm.
+# 4.16 This function gets n sentences from a long document by a graph based algorithm.
 # Parameters: text,the number sentences of an output summary,the number keywords of an output.
 # Return: summary, keywords
 def get_n_sents(text, n, k):
@@ -334,7 +318,7 @@ def get_n_sents(text, n, k):
     return summary, kwds
 
 
-# 3.16 This function cleans text.
+# 4.16 This function cleans text.
 # Parameter: a string.
 # Return: either an abstract or an empty string,either a conclusion or an empty string,
 #        a string without an abstract and a conclusion.
@@ -380,7 +364,7 @@ def clean_text(text):
     return ab, c, text
 
 
-# 3.17  This function checks if the internet is connected or not.
+# 4.17  This function checks if the internet is connected or not.
 # Parameter: none.
 # Return: either True or False.
 def is_internet():
@@ -390,12 +374,12 @@ def is_internet():
         if s != None: return True
     except OSError:
         pass
-    insert_keybox("The system is in the local mode! Please enter the desired number of sentences for the summary, then click the 'Upload a file' button in the bottom right to upload a document to the system!")
+    insert_keybox("The system is in the local mode! Please enter the desired number of sentences for the summary,then click the 'Return' key, finally click the 'Upload a file' button!")
     insert_sents_box("Number of summary's sentences:")
     return False
 
 
-# 3.18 This function  connects to the Open API model.
+# 4.18 This function  connects to the Open API model.
 # Parameter: text, number words of a summary.
 # Return: either a result summary or an error message.
 def connect_API(n_sentences, m):
@@ -404,7 +388,6 @@ def connect_API(n_sentences, m):
     openai.api_key = ftext2text(work_dir + "\\key.txt")
     s_answer = openai.ChatCompletion.create(
         model = run_model,
-        # max_tokens = m,
         messages =[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": f"Summary to {m} words:{n_sentences}"}
@@ -414,10 +397,7 @@ def connect_API(n_sentences, m):
     return s_answer.choices[0].message['content']
 
 
-def connect_API_thread():
-    thread = threading.Thread(target = connect_API)
-    thread.start()
-# 3.19 This function connects to OpenAI API model.
+# 4.19 This function connects to OpenAI API model.
 # Parameter: a prompt.
 # Return: either an answer for a prompt or an error message.
 def chat_API(uq):
@@ -434,7 +414,7 @@ def chat_API(uq):
     return answer.choices[0].message['content']
 
 
-# 3.20 This function gets a title of an uploading pdf file.
+# 4.20 This function gets a title of an uploading pdf file.
 # Parameter: a path file
 # Return: either a title or a empty string.
 def get_info(pdf_file):
@@ -443,7 +423,7 @@ def get_info(pdf_file):
     return t
 
 
-# 3.21 This function gets the first line of text.
+# 4.21 This function gets the first line of text.
 # Parameter: PdfReader
 # Return: either a text or an empty string.
 def get_title(r):
@@ -457,7 +437,7 @@ def get_title(r):
     return lns[0]
 
 
-# 3.22 This function gets an Abstract and remove author's information.
+# 4.22 This function gets an Abstract and remove author's information.
 # Parameter: text.
 # Return: either an  Abstract or an empty string and a text without an Abstract .
 def get_Abstract(text):
@@ -496,7 +476,7 @@ def get_Abstract(text):
         return '', text
 
 
-# 3.23 This function removes references
+# 4.23 This function removes references
 # Parameters: text
 # Return: text without References
 def remove_references(text):
@@ -515,7 +495,7 @@ def remove_references(text):
     return text
 
 
-# 3.24 This function gets a Conclusion.
+# 4.24 This function gets a Conclusion.
 # Parameters: text.
 # Return: either a Conclusion or an empty string.
 def get_Conclusion(text):
@@ -530,14 +510,14 @@ def get_Conclusion(text):
         return ""
 
 
-# 3.25 This function gets a page number from an indirect object.
+# 4.25 This function gets a page number from an indirect object.
 # Parameters: id number, generation number, PdfReader.
 # Return: a page number.
 def get_page_num(n1, n2, r):
     return r._get_page_number_by_indirect(generic.IndirectObject(n1, n2, r))
 
 
-# 3.26 This function extracts text from a PDF file from page pm to page pn.
+# 4.26 This function extracts text from a PDF file from page pm to page pn.
 # Parameters: the page which begin to extract text, stop to extract text after this page, PdfReader.
 # Return: text .
 def extract_text(pm, pn, r):
@@ -551,7 +531,8 @@ def extract_text(pm, pn, r):
         text += page.extract_text()
     return text
 
-# 3.26 This function gets chapters'/sections' text directly from PDF file.
+
+# 4.27 This function gets chapters'/sections' text directly from PDF file.
 # Parameter: PdfReader
 # Return: Either an empty list or a  list of pairs of chapters'(sections') number and their correlating text.
 def extract_chapter_pdf(r):
@@ -648,7 +629,7 @@ def extract_chapter_pdf(r):
                     return []
 
 
-# 3.27 This function gets chapters'/sections' text from a given text.
+# 4.28 This function gets chapters'/sections' text from a given text.
 # Parameter: text
 # Return: Either an  empty list or a list of pairs,
 # where each pair contains of a chapters'/sections' number and its correlated text.
@@ -715,12 +696,11 @@ def get_chapters_text(text):
     return []
 
 
-# 3.28 This function gets a text, cleans the text, feeds the clean text to a summary graph based algorithm
+# 4.29 This function gets a text, cleans the text, feeds the clean text to a summary graph based algorithm
 # to get the summary without internet or  passes the TextStar's result to API with internet
 # Parameter: text
 # Return: number sentences in an abstract, an abstract or an empty string, a conclusion or an empty string,
 # and a summary
-
 def paper2out(text):
     # Call the clean_text(text) function to clean the text.
     a, c, body_text = clean_text(text)
@@ -732,15 +712,12 @@ def paper2out(text):
     for s in sents:
         if ("University" or "Author" or "@") not in s: a += s
     if is_key_here() and is_on():
-
         # Get M sentences by Textstar
         gM, gk = get_n_sents(body_text, n_sentences, ks)
         # Concatenate  the abstract, the conclusion and the M sentences
         t1 = a + gM + c
         # and pass result to openAI API model and get the summary.
-        print(f"num of words: {get_sents_box('')}")
         st = connect_API(t1, get_sents_box(""))
-        # time.sleep(10)
         sents = st.split('.')
         summary = ".".join(sents[:-1])
         osummary += "\n" + summary + '.'
@@ -751,7 +728,7 @@ def paper2out(text):
     return nsa, a, c, osummary
 
 
-# 3.29 This function checks a file is PDF or not
+# 4.30 This function checks a file is PDF or not
 # Parameter: a file path.
 # Return : True or False.
 def is_pdf(fname):
@@ -761,7 +738,7 @@ def is_pdf(fname):
         return False
 
 
-# 3.30 This function checks a file is txt file or not.
+# 4.31 This function checks a file is txt file or not.
 # Parameter: a file path.
 # Return : True or False.
 def is_txt(fname):
@@ -771,7 +748,7 @@ def is_txt(fname):
         return False
 
 
-# 3.31 This function connects to the left button.
+# 4.32 This function connects to the left button.
 # Parameter: none.
 # Return : none.
 def on_off():
@@ -791,19 +768,17 @@ def on_off():
             out_box.insert(END, "\nSystem: ", 'tag2')
             out_box.insert(END, "Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Enter' if you want to use the API mode!")
             out_box.insert(END, "\nUser: ", 'tag1')
-
-
     # If the left button shows "API mode":
     else:
         # When a user clicks the left button, the left button will change to "Local mode".
         buttonL.config(text = "Local mode")
         # Insert the text below to sents_box.
-        insert_keybox("The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
+        insert_keybox("The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Return' key, finally click the 'Upload a file' button!")
         # Insert the text below to sents_box.
         insert_sents_box("Number of summary's sentences:")
 
 
-# 3.32 This function check if a "API mode" is picked by a user.
+# 4.33 This function check if a "API mode" is picked by a user.
 # Parameter: none.
 # Return : True or False.
 def is_on():
@@ -812,13 +787,15 @@ def is_on():
     else:
         return False
 
-# 3.33 This function counts the current words in a textbox.
+
+# 4.34 This function counts the current words in a textbox.
 # Parameter: textbox.
 # Return : number of words.
 def count_words(box):
     return len(box.get("1.0", END).split(" "))
 
-# 3.34 This function connects to the middle button "Upload a key".
+
+# 4.35 This function connects to the middle button "Upload a key".
 # Parameter: none.
 # Return : none.
 def upload_key():
@@ -827,18 +804,16 @@ def upload_key():
         key = ftext2text(file)
         if testkey(key):
             text2file(key, work_dir + "\\key.txt")
-            print(f" key was saved at {work_dir}\key.txt")
             insert_keybox("The system got a working API key")
-            # insert_keybox("The API mode is ready to use! You can  start a chat with the system or enter a desired number of words for a summary into the top right corner box, then click the 'Upload a File' button!")
         else:
             insert_keybox(
                 "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
-        return file
     else:
         insert_keybox(
             "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
 
-# 3.35 This function counts checks if the provided key is valid or not.
+
+# 4.36 This function checks if the provided key is valid or not.
 # Parameter: none.
 # Return : True or False.
 def is_key_here():
@@ -846,46 +821,45 @@ def is_key_here():
     else:
         key = ftext2text(work_dir + "\\key.txt")
         if testkey(key):
-            insert_keybox("API mode is ready to use! You can  start a chat with the system or enter a desired number of words for the summary into the top right corner box, click the 'Upload a File' button !")
-            # out_box.insert(END,"User: ", 'tag1')# make User: appears after chat question
+            insert_keybox("API mode is ready to use! You can  start a chat with the system or enter a desired number of words for the \nsummary into the top right corner box, then click 'Return' key, finally click the 'Upload a File' button !")
             return True
         else:
             insert_keybox(
-                "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
+                "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Return' key, finally click the 'Upload a file' button!")
             return False
 
 
+# 4.37 This function inserts a string to key_box.
+# Parameter: a string
+# Return : none
 def insert_keybox(message):
     key_box.delete('1.0', END)
     key_box.insert(END, f"{message}")
     key_box.see('0.0')
 
 
+# 4.38 This function inserts a string to sents_box.
+# Parameter: a string
+# Return : none
 def insert_sents_box(message):
     sents_box.delete('1.0', END)
     sents_box.insert('1.0', f"{message}",END)
     sents_box.see(END)
 
 
-def num_sents(event):
-    t = sents_box.get("1.0", "end-1c")
-    print(f"num sentences : {t[29:]}")
-    return t[29:].strip()
-
+# 4.39 This function gets an entered number of (words)sentences from the sents_box if a user enter it.
+# Parameter: hit 'Return' key.
+# Return : none
 ws = 0
 num = 0
 def get_sents_box(event):
     global num, ws
     t = sents_box.get("1.0", "end-1c")
-    # print(len(t))
-    # print(f" sentence box: {t}")
     if not is_on():
         r = re.findall("[^0-9]*", t[30:])
         if r == [''] or r[0] != '':
             num = n
-            # print(f"number of sentence: {num}")
             return num
-
         else: return num2int(t[30:])
     else:
     # number of words
@@ -896,7 +870,10 @@ def get_sents_box(event):
         else:
             return num2int(t[26:])
 
-# This function cleans space, newline, and converts an input string number to an integer
+
+# 4.40 This function cleans space, newline, and converts an input string number to an integer.
+# Parameter: a string.
+# Return : an integer
 def num2int(num):
     num = num.strip()
     num = num.replace(" ", "")
@@ -905,48 +882,54 @@ def num2int(num):
     return num
 
 
-### 3.Call the function to create a withow with the specific title, color, and size
+# 5. Create a withow with the specific title, color, and size.
 window = create_window("Fun Chat", 'green4', 1086, 800)
 
+# 6. Create a textbox  where a user can enter an API key and a system can send an instruction or a message to a user.
 key_box = Text(window, width = 108, height = 2, fg = 'forest green')
 key_box.place(x = 26, y = 8)
-key_box.insert(END, "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Upload a file' button to upload a document to the system!")
+key_box.insert(END, "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Return' key, finally click the 'Upload a file' button!")
 key_box.bind('<Right>', getkey)
 key_box.bind('<Return>',set_api_model)
 
+
+# 7. Create a textbox  where a user can enter a desired number of words(sentences) for a summary.
 sents_box = Text(window, width = 19, height = 2, wrap = WORD, fg = 'forest green')
 sents_box.place(x = 900, y = 8)
 sents_box.insert(END, "Number of summary's sentences:")
 sents_box.bind('<Return>', get_sents_box)
 
-### 5.Create a textbox  which contains the output text
-# width = 780, height = 208,x=60, y=80,wchar=97, hchar=8
+
+# 8. Create a textbox  where a system can send an output(responsive) text and a user can enter a prompt.
 out_box = scroll_text(998, 188, 26, 50, 126, 28)
 out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
 out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
 out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
 out_box.tag_config('tag4', foreground='forest green', font=('Arial', 10, "italic"))
 out_box.tag_config('tag5', foreground='brown4', font=('Arial', 10, "italic"))
-
 out_box.insert(END, "System: " ,'tag2')
 out_box.insert(END,"Hello! How are you doing  today? Please start a chat with me by typing your words after 'User:', or enter a desired \nnumber of (sentences) words for a summary into the top right corner box, then click the 'Upload a File' button in the \nbottom-right to upload a document for summary! ")
 out_box.insert(END,"\nUser: ",'tag1')
 out_box.bind('<Return>', enter)
 text = out_box.get("1.0", END)
-# print(f"text outbox: {text}")
 
-### 8. Create a button which a user clicks to upload a file
+
+# 9. Create an "Upload a File" button which a user clicks to upload a file.
 buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 12, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
-                 command=lambda: get_textFfile(out_box))
+                 command=lambda: threading.Thread(target=get_textFfile(out_box)).start())
 # Place a button in a correct position
 buttonR.place(x=746, y=504)
 
+
+# 10. Create a  "mode" button which a user clicks to switch the mode.
 buttonL = Button(window, bg="green", text="Local mode", font=('Arial', 12, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: on_off())
 buttonL.place(x=26, y=504)
 
+
+# 11. Create a  "Provide your API key" button which a user clicks to provide an openAI API key text file.
 buttonM = Button(window, bg="green", text="Provide your API key", font=('Arial', 12, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: upload_key())
