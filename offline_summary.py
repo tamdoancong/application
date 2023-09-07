@@ -120,8 +120,8 @@ def get_textFfile(out_box):
         pass
     else:
         # If the uploading file is pdf, convert to a string
-        title = get_info(fname)
         if is_pdf(fname):
+            title = get_info(fname)
             # convert pdf file to text
             n_pages, lp, text = pdf2text(fname)
             out_text = ""
@@ -160,10 +160,10 @@ def get_textFfile(out_box):
             # If a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
             if a != "" and num_sents("")< nsa:
-                insert_outbox_article(title, a, " by author(s)")
+                insert_outbox_article('', a, " by author(s)")
                 out_box.insert(END, "\nUser: ", 'tag1')
             else:
-                insert_outbox_article(title, summary, None)
+                insert_outbox_article('', summary, None)
 
 
 # 3.13 This function inserts an article's summary  to the out_box.
