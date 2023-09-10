@@ -43,6 +43,7 @@ https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 A user can download directly a single .exe file from my Google Drive link:
 
 https://drive.google.com/drive/folders/13SjO0TstLB_zpbSRAEthI-sGyyuXpw3P
+
 or  click on my GitHub link below to get the detailed instructions how to download and use this version:
 
 https://github.com/tamdoancong/API_offline_summary_app
