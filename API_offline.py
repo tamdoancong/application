@@ -217,9 +217,10 @@ def get_textFfile(out_box):
                         sents = r_chap.split('.')
                         s_chap = ".".join(sents[:-1])
                         # Concatenate all chapters' summary from API
-                        out_text += "\n" + e[0] +": "+ s_chap + '.' + "\n"
+                        out_text += "\n" + e[0].replace('\n','') +": "+ s_chap + '.' + "\n"
                         # get a summary for a whole book.
                     APIsumbook = connect_API(out_text, get_sents_box(''))
+
                     # Insert the results to the outbox
                     insert_outbox_book(title, APIsumbook, out_text, n_pages)
                 # System works in local mode.
@@ -765,7 +766,7 @@ def on_off():
             out_box.insert(END, "\nUser: ", 'tag1')
         if is_internet() and not is_key_here():
             out_box.insert(END, "\nSystem: ", 'tag2')
-            out_box.insert(END, "Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Enter' if you want to use the API mode!")
+            out_box.insert(END, "Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Right arrow' key if \nyou want to use the API mode!")
             out_box.insert(END, "\nUser: ", 'tag1')
     # If the left button shows "API mode":
     else:
@@ -803,7 +804,7 @@ def upload_key():
         key = ftext2text(file)
         if testkey(key):
             text2file(key, work_dir + "\\key.txt")
-            insert_keybox("The system got a working API key")
+            insert_keybox("The system got a working API key!")
         else:
             insert_keybox(
                 "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
@@ -916,7 +917,7 @@ text = out_box.get("1.0", END)
 # 9. Create an "Upload a File" button which a user clicks to upload a file.
 buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 12, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
-                 command=lambda: threading.Thread(target=get_textFfile(out_box)).start())
+                 command=lambda: threading.Thread(get_textFfile(out_box)).start())
 # Place a button in a correct position
 buttonR.place(x=746, y=504)
 

@@ -28,21 +28,26 @@ a new excellent AI. Thus, more people can be benefited from AI.
 This desktop app just focuses on the summary task
 for long documents but its deeply purpose is to  support the equitable deployment of AI.
 
-### Version 1.0.1(Window OS) : Local mode only! This version only needs 158 MB free space. A user just needs download a single .exe file. This version also only needs a computer to run the app! This version was built for users who  do not want to connect to the internet for some reason or who have a computer but cannot access the internet at home can also deploy AI. A user who cannot access the internet at home should go to a public library to access the internet to download the app. In the future this app will be considered to deliver by CDs or USB!
+### Version 1.0.1(Window OS) : Local mode only! This version only needs 158 MB free space.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This version also only needs a computer to run the app! This version was built for users who  do not want to connect to the internet for some reason or who have a computer but cannot access the internet at home can also deploy AI. A user who cannot access the internet at home should go to a public library to access the internet to download the app. In the future this app will be considered to deliver by CDs or USB!
 
 Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. A user can download directly from my Google Drive link:
 
 https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
 
- or a user can click on my GitHub link below inorder to get the detail instruction how to download and use this version:
+ or  click on my GitHub link below to get the detailed instructions how to download and use this version:
 
 https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 
-### Version 1.1.0(Window OS,158 MB) : In this version, the app can perform summary task for a long document(no limited number of words or tokens)  in 'Local mode' with a reasonable result or in 'API mode' with fantastic result.
+### Version 1.1.0(Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result). In API mode, the app can perform chat function like ChatGPT.
 
 A user can download directly a single .exe file from my Google Drive link:
 
-https://drive.google.com/drive/folders/13SjO0TstLB_zpbSRAEthI-sGyyuXpw3P
+https://drive.google.com/file/d/1Y6cYRossDguspzUrASbn-pavIeFZzcKm/view?usp=sharing
+
+or  click on my GitHub link below to get the detailed instructions how to download and use this version:
+
+https://github.com/tamdoancong/API_offline_summary_app
+
 
 Textstar is described in this paper: 
 ```
