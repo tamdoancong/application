@@ -2,6 +2,7 @@
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import WordNetLemmatizer
 import networkx as nx
+import re
 
 
 
@@ -9,7 +10,6 @@ stops=['a', 'about', 'above', 'across', 'after', 'again', 'al', 'all', 'almost',
 
 def text2sents(text):
     lemmatizer = WordNetLemmatizer()
-
     sents = sent_tokenize(text)
     lss = []
     for sent in sents:

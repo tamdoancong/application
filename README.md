@@ -38,6 +38,10 @@ https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
 
 https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 
+Below  is the link of the video which provides detailed instructions how to use this version:  
+
+https://www.youtube.com/watch?v=zv9dOiXoFjA
+
 ### Version 1.1.0(Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result). In API mode, the app can perform chat function like ChatGPT.
 
 A user can download directly a single .exe file from my Google Drive link:
