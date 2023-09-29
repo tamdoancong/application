@@ -28,7 +28,7 @@ a new excellent AI. Thus, more people can be benefited from AI.
 This desktop app just focuses on the summary task
 for long documents but its deeply purpose is to  support the equitable deployment of AI.
 
-### Version 1.0.1(Window OS) : Local mode only! This version only needs 158 MB free space.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This version also only needs a computer to run the app! This version was built for users who  do not want to connect to the internet for some reason or who have a computer but cannot access the internet at home can also deploy AI. A user who cannot access the internet at home should go to a public library to access the internet to download the app. In the future this app will be considered to deliver by CDs or USB!
+### offline AI summary app(Version 1.0.1 for Window OS) : Local mode only! This version only needs 158 MB free space.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This version also only needs a computer to run the app! This version was built for users who  do not want to connect to the internet for some reason or who have a computer but cannot access the internet at home can also deploy AI. A user who cannot access the internet at home should go to a public library to access the internet to download the app. In the future this app will be considered to deliver by CDs or USB!
 
 Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. A user can download directly from my Google Drive link:
 
@@ -42,7 +42,7 @@ Below  is the link of the video which provides detailed instructions how to use 
 
 https://www.youtube.com/watch?v=zv9dOiXoFjA
 
-### Version 1.1.0(Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result). In API mode, the app can perform chat function like ChatGPT.
+### Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result). In API mode, the app can perform chat function like ChatGPT.
 
 A user can download directly a single .exe file from my Google Drive link:
 
