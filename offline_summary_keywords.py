@@ -459,11 +459,13 @@ def extract_chapter_pdf(r):
                         con_i = l.index(i)
                 # Create a list l_s such that l_s contains elements in l
                 # from index 0 to the index next to the index of element which has the word "Conclusion".
-                l_s = l[:con_i + 2]
+                l_s = l[:con_i + 1]
+                print(f" l_s : {l_s}")
                 # Loop through l_s.
                 for s in range(len(l_s)):
                     # Append a pair (section,a starting page number of correlated section) into the list l_sec
                     l_sec.append((l_s[s][0], get_page_num(l_s[s][1].idnum, l_s[s][1].generation, r)))
+
                 # Create an empty list, which will contain pairs of section's number and correlated text.
                 l_sec_text = []
                 # Put  tuples of section's number and correlating text to the list l_sec_text

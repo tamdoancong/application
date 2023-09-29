@@ -78,8 +78,12 @@ def ftext2text(file):
 # Parameter: none
 # Return: file path
 def upload_file():
-    fname = filedialog.askopenfilename(filetypes = [('PDF Files', '*.pdf'), ('Text Files', '*.txt')])
-    return fname
+    try:
+        fname = filedialog.askopenfilename(filetypes = [('PDF Files', '*.pdf'), ('Text Files', '*.txt')])
+        return fname
+    except:
+        OSError
+        pass
 
 
 # 4.6 This function gets a user's question and feeds that to chat_API() function
@@ -124,10 +128,10 @@ def set_api_model(event):
     model = model.replace(" ","")
     if testmodel(model):
         text2file(model, work_dir + "\\model.txt")
-        insert_keybox(f"The system is working on {model}. API mode is ready to use! ")
+        insert_keybox(f"The system is working on {model}. System is in API mode! ")
         return model
     else:
-        f"The  entered model has problem. The system will use GPT 4 model "
+        f"The  entered model has problem. The system will use GPT 4 model. System is in API mode!"
 
 
 # 4.9 This function checks if a given key works or not.
@@ -198,7 +202,7 @@ def get_textFfile(out_box):
             # print(f" lp: {lp}")
             out_text = ""
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
-            if n_pages > 100 and lp != []:
+            if n_pages >= 100 and lp != []:
                 # If a device is connected to the internet and user choose " API mode"
                 # and a valid OpenAI API key is provided.
                 if is_on() and is_key_here():
@@ -226,6 +230,7 @@ def get_textFfile(out_box):
                 # System works in local mode.
                 else:
                     # Get summary from a graph algorithm for an entire book.
+                    # ab, c, text = clean_text(text)
                     sumbook, gk = get_n_sents(text, get_sents_box(''), k)
                     # For each chapter:
                     for e in lp:
@@ -241,9 +246,12 @@ def get_textFfile(out_box):
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
                 nsa, a, c, summary = paper2out(text)
+                # print(f" nsa: {nsa}")
+                # print(get_sents_box(""))
                 # If the system is working in a "Local mode" and a is not an empty string
                 # and the desired number of summary's sentences less than number sentences in a.
                 if a != "" and user_know() == "Local mode!" and get_sents_box("") < nsa:
+
                     # Insert title and a to out_box.
                     insert_outbox_article(title, a, "by author(s)", n_pages)
                 else:
@@ -761,13 +769,11 @@ def on_off():
         # Insert the text below to sents_box.
         insert_sents_box("Number of summary's words:")
         if not is_internet():
-            out_box.insert(END, "\nSystem: ", 'tag2')
-            out_box.insert(END,"The internet is not currently connected. Please connect your device to the internet if you want to use the API mode!")
-            out_box.insert(END, "\nUser: ", 'tag1')
+            insert_outbox_message("The internet is not currently connected. Please connect your device to the internet if you want to use the API mode!")
         if is_internet() and not is_key_here():
-            out_box.insert(END, "\nSystem: ", 'tag2')
-            out_box.insert(END, "Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Right arrow' key if \nyou want to use the API mode!")
-            out_box.insert(END, "\nUser: ", 'tag1')
+            insert_outbox_message("Your device is connected to the internet! The left button is ‘ API mode’! Please click the bottom middle button to \nprovide your OpenAI key text file, or enter your key into the top left box after the colon  then click 'Right arrow' key if \nyou want to use the API mode!")
+        if is_internet() and is_key_here():
+            insert_outbox_message("System is in API mode! You can  start a chat with the system or enter a desired number of words for the summary into \nthe top right corner box, then click 'Return' key, after that click the 'Upload a File' button !")
     # If the left button shows "API mode":
     else:
         # When a user clicks the left button, the left button will change to "Local mode".
@@ -804,13 +810,22 @@ def upload_key():
         key = ftext2text(file)
         if testkey(key):
             text2file(key, work_dir + "\\key.txt")
-            insert_keybox("The system got a working API key!")
+            if is_on():
+                insert_outbox_message(" System is in the API mode! You can  start a chat with the system or enter a desired number of words for the summary \ninto the top right corner box, then click 'Return' key, finally click the 'Upload a File' button !")
+                insert_keybox("System is in the API mode! You can  start a chat with the system or enter a desired number of words for the \nsummary into the top right corner box, then click 'Return' key, finally click the 'Upload a File' button !")
+            else:insert_keybox("The system got a working API key!")
         else:
-            insert_keybox(
-                "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
+            insert_outbox_message(" Please provide your OpenAI key again by clicking on  the middle button to provide your OpenAI key file, or entering \nyour key into the top  left box then click 'Right arrow' key!")
+            insert_keybox("API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to \nprovide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
     else:
-        insert_keybox(
-            "API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
+        insert_outbox_message(" Please provide your OpenAI key again by clicking on  the middle button to provide your OpenAI key file, or entering \nyour key into the top  left box then click 'Right arrow' key!")
+        insert_keybox("API mode needs:1/The internet is connected 2/The left button is ‘ API mode’ 3/Click the middle button to provide your OpenAI key file, or enter your key here then click 'Right arrow' key:")
+
+def insert_outbox_message(m):
+    out_box.insert(END, "\nSystem:", 'tag2')
+    out_box.insert(END, f"{m}")
+    out_box.insert(END, "\nUser:", 'tag1')
+
 
 
 # 4.36 This function checks if the provided key is valid or not.
@@ -821,11 +836,10 @@ def is_key_here():
     else:
         key = ftext2text(work_dir + "\\key.txt")
         if testkey(key):
-            insert_keybox("API mode is ready to use! You can  start a chat with the system or enter a desired number of words for the \nsummary into the top right corner box, then click 'Return' key, finally click the 'Upload a File' button !")
+            insert_keybox("System is in API mode! You can  start a chat with the system or enter a desired number of words for the \nsummary into the top right corner box, then click 'Return' key, finally click the 'Upload a File' button !")
             return True
         else:
-            insert_keybox(
-                "The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Return' key, finally click the 'Upload a file' button!")
+            insert_keybox("The system is in the local mode! Please enter a desired number of sentences for the summary into the top \nright corner box, then click the 'Return' key, finally click the 'Upload a file' button!")
             return False
 
 

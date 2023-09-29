@@ -22,7 +22,7 @@ huger in development countries. In order to benefit more people from the AI deve
 may consider more about low-income people's benefit.   
 Therefore, how to have an application which can support who do not 
 have the internet connecting in their device still can deploy AI and who have the internet can access
-the latest fantastic new technology can produce more equality AI deployment. This scheme creates more
+the latest fantastic technology can produce more equality AI deployment. This scheme creates more
 chances for low-income people to reach AI and benefit themselves and fortunate people also still enjoy 
 a new excellent AI. Thus, more people can be benefited from AI.   
 This desktop app just focuses on the summary task

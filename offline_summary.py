@@ -7,6 +7,7 @@ from builder1 import process_text
 import networkx as nx
 import re
 import nltk
+import os
 
 # Set default number of sentences and keyphases to extract
 n, k = 5, 5
@@ -111,8 +112,6 @@ def text2file(text, file):
 # Parameter: out_box
 # Return:
 def get_textFfile(out_box):
-    # Clean the output textbox
-    if count_words(out_box) > 1000: out_box.delete("1.0", END)
     # Get the absolute path of the uploading file
     fname = upload_file()
     # If a user click the right button "Upload file" but will not pick a file and close the widow.
@@ -121,24 +120,36 @@ def get_textFfile(out_box):
     else:
         # If the uploading file is pdf, convert to a string
         if is_pdf(fname):
-            title = get_info(fname)
+            title = os.path.basename(fname)[:-4]
             # convert pdf file to text
             n_pages, lp, text = pdf2text(fname)
             out_text = ""
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
             if n_pages > 100 and lp != []:
                 # Get summary from a graph algorithm for an entire book.
-                sumbook, gk = get_n_sents(text, num_sents(""), k)
+                sumbook, gk = get_n_sents(text, num_sents(''), k)
+                sumbook = sumbook.replace('\n', ' ')
+                out_box.insert(END, "\nSystem: ", 'tag2')
+                out_box.insert(END, f"Summary for the whole uploaded {n_pages}-page document", 'tag4')
+                out_box.insert(END, f" '{title}':", 'tag5')
+                out_box.insert(END, f"\n{sumbook}")
+                window.update()
                 # For each chapter:
                 for e in lp:
                     # Call the function clean_text() to clean each chapter's text.
                     a, c, chap = clean_text(e[1])
                     # Get a summary for each chapter from a graph algorithm.
                     gM, gk = get_n_sents(chap, num_sents(""), k)
-                    # Concatenate all chapters' summary form a graph algorithm.
-                    out_text += '\n' + e[0] + gM
-                # Insert a summary for a whole book to out_box.
-                insert_outbox_book(title, sumbook, out_text)
+                    e0 = e[0].replace('\n', ' ')
+                    out_box.insert(END, f"\n\n{e0}: {gM}.")
+                    out_box.see(END)
+                    window.update()
+                out_box.insert(END, "\n\nSystem: Please enter a desired number summary sentences and hit 'Return' key!",
+                               'tag2')
+                out_box.insert(END, "\nUser:", 'tag1')
+                out_box.see(END)
+                global m
+                m = 0
             # If chapters' structure cannot extract from PDF file.
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
@@ -147,10 +158,10 @@ def get_textFfile(out_box):
                 # and the desired number of summary's sentences less than number sentences in a.
                 if a != ""  and num_sents("")< nsa:
                     # Insert title and a to out_box.
-                    insert_outbox_article(title, a,  "by author(s)")
+                    insert_outbox_article(title, a,  "by author(s)",n_pages)
                 else:
                     # Insert title and summary to out_box.
-                    insert_outbox_article(title, summary, "")
+                    insert_outbox_article(title, summary, "",n_pages)
         # If an uploading file is a txt file,
         if is_txt(fname):
             # convert the file to a string.
@@ -161,7 +172,7 @@ def get_textFfile(out_box):
             # and the desired number of summary's sentences less than number sentences in a.
             if a != "" and num_sents("")< nsa:
                 insert_outbox_article('', a, " by author(s)")
-                out_box.insert(END, "\nUser: ", 'tag1')
+                out_box.insert(END, "\nUser:", 'tag1')
             else:
                 insert_outbox_article('', summary, None)
 
@@ -169,28 +180,16 @@ def get_textFfile(out_box):
 # 3.13 This function inserts an article's summary  to the out_box.
 # Parameter: of an uploading document, summary of the document, a string "by author(s)".
 # Return: none
-def insert_outbox_article(title, summary, aut):
+def insert_outbox_article(title, summary, aut, n):
     global m
     out_box.insert(END, "\nSystem: ", 'tag2')
-    out_box.insert(END, f"Summary of the uploaded document {title} {aut}: \n", 'tag4')
+    out_box.insert(END, f"Summary of the uploaded {n}-page document ", 'tag4')
+    out_box.insert(END, f"'{title}'", 'tag5')
+    out_box.insert(END, f" {aut}:\n", 'tag4')
     out_box.insert(END, summary)
-    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click enter!", 'tag2')
+    out_box.insert(END, "\n\nSystem: Please enter a desired number summary sentences and hit 'Return' key!", 'tag2')
     out_box.insert(END, "\nUser:", 'tag1')
-    m = 0
-
-
-# 3.13 This function inserts a book's summary  to the out_box.
-# Parameter: the title of an uploading book, a summary for the whole book , each chapter's summary.
-# Return: none
-def insert_outbox_book(title, sumbook,  out_text):
-    global m
-    out_box.insert(END, "\nSystem: ", 'tag2')
-    out_box.insert(END, f"Summary of the uploaded document {title}:", 'tag4')
-    out_box.insert(END, f" \n{sumbook}")
-    out_box.insert(END, f"\nSummary for each chapter of the uploaded document {title}:", 'tag4')
-    out_box.insert(END, f" \n{out_text}")
-    out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and click enter!", 'tag2')
-    out_box.insert(END, "\nUser:", 'tag1')
+    out_box.see(END)
     m = 0
 
 
@@ -252,29 +251,6 @@ def clean_text(text):
     # Replace all newlines by ' '.
     text = re.sub('\n', ' ', text)
     return ab, c, text
-
-
-# 3.20 This function gets a title of an uploading pdf file.
-# Parameter: a path file
-# Return: either a title or a empty string.
-def get_info(pdf_file):
-    r = PdfReader(pdf_file)
-    t = '"' + get_title(r) + '"'
-    return t
-
-
-# 3.21 This function gets the first line of text.
-# Parameter: PdfReader
-# Return: either a text or an empty string.
-def get_title(r):
-    i = 0
-    text = ""
-    while text == "":
-        p = r.pages[i]
-        text = p.extract_text()
-        i += 1
-    lns = text.split('\n')
-    return lns[0]
 
 
 # 3.22 This function gets an Abstract and remove author's information.
@@ -580,6 +556,23 @@ def is_txt(fname):
 def count_words(box):
     return len(box.get("1.0", END).split(" "))
 
+def clear():
+    global m
+    out_box.delete("1.0", END)
+    out_box.insert(END, "System: Please enter a desired number summary sentences and hit 'Return' key!", 'tag2')
+    out_box.insert(END, "\nUser:", 'tag1')
+    m = 0
+
+def save2file(out_box):
+    try:
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt")])
+        text = out_box.get("1.0", "end-1c")
+        with open(file_path, 'w') as file:
+            file.write(text)
+    except:
+        OSError
+        pass
 
 
 
@@ -590,20 +583,36 @@ window = create_window("Offline Summary Tool", 'green4', 1086, 800)
 ### 5.Create a textbox  which contains the output text
 # width = 780, height = 208,x=60, y=80,wchar=97, hchar=8
 out_box = scroll_text(998, 188, 26, 26, 127, 30)
-out_box.insert(END, "System: Please enter a desired number summary sentences and click enter!", 'tag2')
+out_box.insert(END,"Hi! How are you today! I am Tam's reader assistant! I will help you save time, energy and money by summarizing  documents for \nyou without internet connection and no fee :)")
+out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and hit 'Return' key!", 'tag2')
 out_box.insert(END,"\nUser:",'tag1')
 
-out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
-out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
-out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
-out_box.tag_config('tag4', foreground='forest green', font=('Arial', 10, "italic"))
+out_box.tag_config('tag1', foreground='red',font=('Arial', 10,"bold"))
+out_box.tag_config('tag2', foreground='green',font=('Arial', 10,"bold"))
+out_box.tag_config('tag3', foreground='purple4',font=('Arial', 10,"italic"))
+out_box.tag_config('tag4', foreground='forest green',font=('Arial', 10,"italic"))
+out_box.tag_config('tag5', foreground='brown4', font=('Arial', 10, "italic"))
 out_box.bind('<Return>', num_sents)
 
 ### 8. Create a button which a user clicks to upload a file
-buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 10, "bold"),
+buttonM = Button(window, bg="green", text="Upload a File", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: get_textFfile(out_box))
 # Place a button in a correct position
-buttonR.place(x=400, y=510)
+buttonM.place(x=420, y=510)
+
+###9. Create a button which a user clicks to clear the screen
+buttonR = Button(window, bg="green", text="Clear", font=('Arial', 10, "bold"),
+                 width=30, height=1, anchor=CENTER, highlightthickness=1,
+                 command=lambda: clear())
+# Place a button in a correct position
+buttonR.place(x=50, y=510)
+
+#10
+buttonL = Button(window, bg="green", text="Save", font=('Arial', 10, "bold"),
+                 width=30, height=1, anchor=CENTER, highlightthickness=1,
+                 command=lambda: save2file(out_box))
+# Place a button in a correct position
+buttonL.place(x=780, y=510)
 
 window.mainloop()
