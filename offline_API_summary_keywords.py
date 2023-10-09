@@ -334,29 +334,39 @@ def user_know():
 ## 2.9 Function get n sentences from a long document by TextStar (a graph based algorithm)
 ## parameters: text:input text, n: the number semtences of an output summary, k: the number key words of an output
 def get_n_sents(text, n, k):
-    sents, kwds = process_text(text = text, ranker = nx.degree_centrality, sumsize = n,
-                         kwsize=k, trim = 80)
+    sents, kwds = process_text(text=text, ranker=nx.degree_centrality, sumsize=n,
+                               kwsize=k, trim=80)
     summary = ""
     # A sent is a list of tuples, each tuple is a pair of sentence id and sentence
     for sent in sents:
         # Extract only the sentence and convert tuple to string
         s = str(sent[1])
-        summary += " "+ s
+        summary += " " + s
     porter = PorterStemmer()
     l = []
-    li= []
+    li = []
     for i in range(len(kwds)):
         for k in range(len(kwds)):
-            if i != k and porter.stem(kwds[i]) == porter.stem(kwds[k]):
-                if (i,k) not in li and (k,i) not in li:
-                    li.append((i,k))
+            if i != k and (
+                    porter.stem(kwds[i]) == porter.stem(kwds[k]) or porter.stem(kwds[i])[:-1] == porter.stem(kwds[k])):
+                if (i, k) not in li and (k, i) not in li:
+                    li.append((i, k))
                     l.append((kwds[i], kwds[k]))
+
+    print(f"l is {l}")
+    # print(f" li is {li}")
+
     for t in l:
-        if t[0] in summary and  t[1] in kwds:
+
+        if t[0] in summary and t[1] in kwds:
             kwds.remove(t[1])
-        if t[1] in summary and t[0] in kwds:
+        elif t[1] in summary and t[0] in kwds:
+            kwds.remove(t[0])
+        else:
             kwds.remove(t[0])
     kz = kwds[:get_kwords_box('')]
+
+
     return summary, kz
 
 
