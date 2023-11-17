@@ -20,9 +20,9 @@ Our system outperforms several deep learning models but it just needs maximum 20
 Thus, people who have a computer even though it is 10 years old can use this app to experience and get benefit from AI.
 This is only a summary app, but deeply it supports equal deployment AI and social good.
 
-### Offline AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 158 MB free space and maximum 200 MB of memory.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
+# TextRings Local Desktop AI summary app(Version 1.0.0 for Window OS) : Local app! This version only needs 180 MB free space and maximum 200 MB of memory.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
 
-Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. A user can download directly from my Google Drive link:
+## Users can download a single .exe file (an end user version just double clicks for use after finishing download ) from my Google Drive link:
 
 https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
 
@@ -30,15 +30,20 @@ https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
 
 https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 
-Below  is the link of the video which provides detailed instructions how to use this version:  
+Below  is the link of the DEMO  which provides detailed instructions how to use this version:  
 
 https://www.youtube.com/watch?v=zv9dOiXoFjA
 
+## Developers:
+
+1.Download my python version TextRings_offline_summary.py 
+2. Install dependency libraries in requirements.txt :
 
 
-### Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
 
-A user can download directly a single .exe file from my Google Drive link:
+# Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
+
+## Users can download directly a single .exe file from my Google Drive link:
 
 https://drive.google.com/drive/folders/13SjO0TstLB_zpbSRAEthI-sGyyuXpw3P
 
@@ -46,6 +51,12 @@ or  click on my GitHub link below to get the detailed instructions how to downlo
 
 https://github.com/tamdoancong/API_offline_summary_app
 
+## Developers:
+1.Download one or all my python versions (offline_APImultiplerequest.py, offline_API_summary_keywords.py) and builder1.py.
+2. Install dependency libraries in requirements.txt for offline mode.
+3. Install  an extra packet for API mode:
+    openai==0.27.8
+    
 
 
 `
