@@ -236,7 +236,7 @@ def get_n_sents(text, n, k):
     for sent in sents:
         # Extract only the sentence's text from each tuple and convert the tuple to string.
         s = str(sent[1])
-        summary += " " + s
+        summary += " " + s[0].upper() + s[1:]
     return summary, kwds
 
 

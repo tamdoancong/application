@@ -1,32 +1,27 @@
 ﻿## Note: This app is in the process of development. The code in here I just copied some from my private github. All code will be here when the development is finished
-As we know, recent year Artificial Intelligent (AI) has changed the world. Natural Language Processing
-(NLP) has achieved a new successful after ChatGPT and GPT4 were released. Many big tech released LLMs 
-now. Does everyone get benefits from this amazing process? AI will make a significant revolution and 
-open a new history for human society. It is a certain process we cannot avoid or delay. However, we want
-more people to be benefited, especially the middle class and lower class also gain benefit from this
-new opportunity not just the upper classes people. As we know, the internet apps like ChatGPT, Bing AI,
-Google Bart etc... which were developed base on latest LLMs. Thus, they can perform well many NLP tasks,
-which include summary task. The basic versions of these apps also are free. However, the internet is required to use those apps and the input tokens are limited.  
-Recently,the https://claude.ai/ provides a specific tool for summary with various types of files. AI21 lap also produced a specific internet app for a long document as they say it performs better
-than GPT3. However, the book “Introduction to Graph Theory” by Robin J. Wilson (180 pages, PDF file) 
-was uploaded (May 2023), then both showed an error message “Uploaded file is too large…” or “network error.
-A user also needs the internet to use these models.   
-Thus, people who do not have the internet cannot take advantage from these powerful AI. Moreover, these top deep learning models currently have restricted 
-input tokens. Thus, even though people have money to access the internet and pay for service plus, 
-currently these apps cannot perform the summary task for a long document which have more tokens than 
-these apps’ cap if a user does not divide the long document to several small parts.   
-According to United States Census Bureau (https://www.census.gov, until 2021) ,There are around **21 million** people in US who have computer but cannot access to the internet. This category is 
-huger in development countries. In order to benefit more people from the AI development's progress, AI's developers 
-may consider more about low-income people's benefit.   
-Therefore, how to have an application which can support who do not 
-have the internet connecting in their device still can deploy AI and who have the internet can access
-the latest fantastic technology can produce more equality AI deployment. This scheme creates more
-chances for low-income people to reach AI and benefit themselves and fortunate people also still enjoy 
-a new excellent AI. Thus, more people can be benefited from AI.   
-This desktop app just focuses on the summary task
-for long documents but its deeply purpose is to  support the equitable deployment of AI.
+According to  United Census Bureau https://www.census.gov/quickfacts/fact/table/US/HSD410221, until 2021, there are around 21 million American who have computer but unable to access to the internet at their home.
+Boston Consulting Group https://www.bcg.com/publications/2021/digital-access-in-united-states-education and Education Week Research https://www.edweek.org/technology/most-students-now-have-home-internet-access-but//-what-about-the-ones-who-dont/2021/04 estimated 12 million of them are US students.
+This category is extremely huger in the world.
+This giant vulnerable group of people do not have an opportunity to access  internet Artificial Intelligence(AI)  apps based deep learning models like ChatGPT https://openai.com/blog/chatgpt , Google Bart https://ai.google/static/documents/google-about-bard.pdf ,etc or  local deep learning model which requires  the latest hardware (Central Processing Unit(CPU), Graphics Processing Unit(GPU)), the newest software(Compute Unified Device Architecture(CUDA)), big Random Access Memory(RAM), and computer skills.
 
-### offline AI summary app(Version 1.0.1 for Window OS) : Local mode only! This version only needs 158 MB free space.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This version also only needs a computer to run the app! This version was built for users who  do not want to connect to the internet for some reason or who have a computer but cannot access the internet at home can also deploy AI. A user who cannot access the internet at home should go to a public library to access the internet to download the app. In the future this app will be considered to deliver by CDs or USB!
+However, deep learning models have dominated Natural Language Processing(NLP) nowadays.
+Especially, after ChatGPT appeared and blew a new wind to NLP research and industry, Large Language Models(LLMs) quickly become a new attractive trend, rapidly growth up investment research and solid established future area.
+Although GPT4 https://openai.com/gpt-4 is currently the state of the art (SOTA) in the field, many big tech companies have invested a huge money and time to create a new LLMs to compete with GPT 4 , for example Google Bart ,LLaMa https://ai.meta.com/blog/large-language-model-llama-meta-ai/ ,Ernie Bot https://www.technologyreview.com/2023/03/22/1070154/baidu-ernie-bot-chatgpt-reputation/ , Grok https://grok.x.ai/,etc.
+These fantastic models need billions dollars to build, train, tune, deliver, and maintain  in a big clouding center and require a giant amount of data for pre-training process which takes from months to years.
+Despite that, these models have a limited input token.
+
+In other hand, graph based models without restrict number of input token do not need training process or  running in supper computer.
+However, the performance of graph based method is usually lower  far away from  deep learning approaches SOTA.
+
+We propose a local, non training, small size and real time   open source summarization system .
+A significant part of the system is a novel fast graph based algorithm which connects lemmas and sentence identifiers to build a text graph.
+The algorithm  ranks, extracts, and returns  the salient sentences in the order in which they occur in the text .
+The other important components are local tools which convert, extract, and clean page's text, chapter's text, or text from a PDF document before feeding to the summarizer.
+Our system outperforms several deep learning models but it just needs maximum 200MB memory and 158 MB of disk, so it  can run in any computer.
+Thus, people who have a computer even though it is 10 years old can use this app to experience and get benefit from AI.
+This is only a summary app, but deeply it supports equal deployment AI and social good.
+
+### Offline AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 158 MB free space and maximum 200 MB of memory.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
 
 Since a single file with 158 MB cannot be pushed to GitHub, Google Drive was used. A user can download directly from my Google Drive link:
 
@@ -40,7 +35,9 @@ Below  is the link of the video which provides detailed instructions how to use 
 
 https://www.youtube.com/watch?v=zv9dOiXoFjA
 
-### Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result). In API mode, the app can perform chat function like ChatGPT.
+
+
+### Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
 
 A user can download directly a single .exe file from my Google Drive link:
 
@@ -51,13 +48,5 @@ or  click on my GitHub link below to get the detailed instructions how to downlo
 https://github.com/tamdoancong/API_offline_summary_app
 
 
-Textstar is described in this paper: 
-```
-@inproceedings{brock2022textstar,
-  title={Textstar: a Fast and Lightweight Graph-Based Algorithm for Extractive Summarization and Keyphrase Extraction},
-  author={Brock, David and Khan, Ali and Doan, Tam and Lin, Alicia and Guo, Yifan and Tarau, Paul},
-  booktitle={Proceedings of the The 20th Annual Workshop of the Australasian Language Technology Association},
-  pages={161--169},
-  year={2022}
-}
-```
+
+`

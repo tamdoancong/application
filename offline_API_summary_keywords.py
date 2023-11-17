@@ -341,7 +341,7 @@ def get_n_sents(text, n, k):
     for sent in sents:
         # Extract only the sentence and convert tuple to string
         s = str(sent[1])
-        summary += " " + s
+        summary += " " + s[0].upper() + s[1:]
     porter = PorterStemmer()
     l = []
     li = []
@@ -752,7 +752,7 @@ def get_chapters_text(text):
                 contents = text[lc[0][0]:lap[0][0]]
                 text_no_content = text[lap[0][0]:]
                 contents = re.sub('\n[\.\s]+', '\n', contents)
-                chs = re.findall("\n\d+\s?[A-Z].+", contents)
+                chs = re.findall("F", contents)
                 li = []
                 for n in range(len(chs)):
                     if "Contents" in chs[n] or "CONTENTS" in chs[n][2]: li.append(n)

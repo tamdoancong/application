@@ -3,14 +3,65 @@ from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 from PyPDF2 import PdfReader, generic
 from tkinter import filedialog
-from builder1 import process_text
-import networkx as nx
 import re
 import nltk
 import os
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.stem import WordNetLemmatizer
+import networkx as nx
 
-# Set default number of sentences and keyphases to extract
-n, k = 5, 5
+# 2. TextRings algorithm
+# Start : TextRings algorithm
+stops=['a', 'about', 'above', 'across', 'after', 'again', 'al', 'all', 'almost', 'alone', 'along', 'already', 'also', 'although', 'always', 'among', 'an', 'and', 'another', 'any', 'anybody', 'anyone', 'anything', 'anywhere', 'are', 'around', 'as', 'at', 'away', 'b', 'back', 'backed', 'backing', 'backs', 'be', 'been', 'before', 'began', 'behind', 'best', 'better', 'between', 'both', 'but', 'by', 'c', 'came', 'can', 'cannot', 'case', 'cases', 'certain', 'certainly', 'clear', 'clearly', 'come', 'could', 'd', 'did', 'do', 'does', 'done', 'down', 'down', 'downed', 'downing', 'downs', 'during', 'e', 'each', 'early', 'either', 'end', 'ended', 'ending', 'ends', 'enough', 'et', 'even', 'evenly', 'ever', 'every', 'everybody', 'everyone', 'everything', 'everywhere', 'f', 'face', 'faces', 'fact', 'facts', 'far', 'felt', 'few', 'find', 'finds', 'first', 'for', 'four', 'from', 'full', 'fully', 'further', 'furthered', 'furthering', 'furthers', 'g', 'gave', 'general', 'generally', 'get', 'gets', 'go', 'going', 'good', 'goods', 'got', 'great', 'greater', 'greatest', 'group', 'grouped', 'grouping', 'groups', 'h', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'herself', 'high', 'high', 'high', 'higher', 'highest', 'him', 'himself', 'his', 'how', 'however', 'i', 'if', 'important', 'in', 'interest', 'interested', 'interesting', 'interests', 'into', 'is', 'it', 'its', 'itself', 'j', 'just', 'k', 'keep', 'keeps', 'kind', 'knew', 'know', 'known', 'knows', 'l', 'large', 'largely', 'last', 'later', 'latest', 'least', 'less', 'let', 'lets', 'like', 'likely', 'long', 'longer', 'longest', 'm', 'made', 'make', 'making', 'man', 'many', 'may', 'me', 'might', 'more', 'most', 'mostly', 'mr', 'mrs', 'much', 'must', 'my', 'myself', 'n', 'need', 'needed', 'needing', 'needs', 'never', 'new', 'newer', 'newest', 'next', 'no', 'nobody', 'non', 'noone', 'not', 'nowhere', 'o', 'of', 'off', 'often', 'on', 'once', 'one', 'only', 'open', 'or', 'other', 'others', 'our', 'out', 'over', 'p', 'part', 'parted', 'parting', 'parts', 'per', 'perhaps', 'place', 'places', 'point', 'pointed', 'pointing', 'points', 'present', 'presented', 'presenting', 'presents', 'problem', 'problems', 'put', 'puts', 'q', 'quite', 'r', 'rather', 'really', 'room', 'rooms', 's', 'said', 'same', 'saw', 'say', 'says', 'seem', 'seemed', 'seeming', 'seems', 'sees', 'several', 'shall', 'she', 'should', 'show', 'showed', 'showing', 'shows', 'side', 'sides', 'since', 'so', 'some', 'somebody', 'someone', 'something', 'somewhere', 'soon', 'state', 'states', 'still', 'still', 'such', 'sure', 't', 'than', 'that', 'the', 'their', 'them', 'then', 'there', 'therefore', 'these', 'they', 'thing', 'things', 'think', 'thinks', 'this', 'those', 'though', 'thought', 'thoughts', 'three', 'through', 'thus', 'to', 'today', 'together', 'too', 'took', 'toward', 'two', 'u', 'under', 'until', 'up', 'upon', 'us', 'use', 'used', 'uses', 'v', 'very', 'w', 'want', 'wanted', 'wanting', 'wants', 'was', 'way', 'ways', 'we', 'well', 'wells', 'went', 'were', 'what', 'when', 'where', 'whether', 'which', 'while', 'who', 'whole', 'whose', 'why', 'will', 'with', 'within', 'without', 'work', 'worked', 'working', 'works', 'would', 'x', 'y', 'yet', 'you', 'your', 'yours', 'z']
+
+
+def text_normalize(text):
+    lemmatizer = WordNetLemmatizer()
+    sents = sent_tokenize(text)
+    l_sents_lemmas =[]
+    for sent in sents:
+        if len(sent)> 30 and len(sent) < 200 and re.findall("=|\.,|pages",str(sent))==[]:
+        # if  len(sent)> 30 and len(sent) < 200 and '='not in sent and '.,' not in sent:
+            words = word_tokenize(sent)
+            l_lemmas = []
+            if len(words) > 5:
+                for word in words:
+                    lemma = lemmatizer.lemmatize(word)
+                    if lemma.lower() not in stops and lemma not in [',', '.', '!', '?', '@', '#', '$', '%', '&', '*', '^', '+', '-', '/', '|', '~', ':', ')', '(', '=', '}', '{', '[', ']', '1', '2', '3', '4', '5', '6', '7', '8', '9',';']:
+                        l_lemmas.append(lemma)
+                if not l_lemmas: continue
+                l_sents_lemmas.append((sent,l_lemmas))
+    # print(l_sents_lemmas)
+
+    return l_sents_lemmas
+
+def l_sents_lemmas2graph(l_sents_lemmas):
+    g = nx.DiGraph()
+    g.add_edge(0, len(l_sents_lemmas) - 1)  # connect first ID to last ID
+    for sent_id, (lemmas, _) in enumerate(l_sents_lemmas):
+        if sent_id > 0:
+            g.add_edge(sent_id, sent_id - 1)  # connect an ID to a next lower ID in a sequence
+        g.add_edge(lemmas[0], sent_id)  # connect first lemma to ID
+        # g.add_edge(lemmas[-1], sent_id)
+        for i in range(1, len(lemmas)):
+            g.add_edge(lemmas[i], lemmas[i - 1])
+        #     g.add_edge(lemmas[i],sent_id)
+    return g
+
+
+def get_summary(text,ranker,sumsize):
+    lss = text_normalize(text)
+    g = l_sents_lemmas2graph(lss)
+    # g, ranks = textstar(g, ranker, sumsize, trim= 80)
+    unsorted_ranks = ranker(g)
+    ranks = sorted(unsorted_ranks.items(), reverse=True, key=lambda e: e[1])
+    summary_id = [i[0] for i in ranks if isinstance(i[0], int)][:sumsize]
+    all_sents = [sent for (sent, _) in lss]
+    sents = [(i, all_sents[i]) for i in summary_id]
+    return sents
+# End : TextRings algorithm
+
+n = 4
 
 # 3. All necessary functions
 # 3.1 This function creates a window with desired title, color, and size.
@@ -127,21 +178,26 @@ def get_textFfile(out_box):
             # If the file can be extracted by list of chapters(sections) and number of pages great than 100
             if n_pages > 100 and lp != []:
                 # Get summary from a graph algorithm for an entire book.
-                sumbook, gk = get_n_sents(text, num_sents(''), k)
+                # ab, c, textbook= clean_text(text)
+                # print(f"book :{text}")
+                sumbook = get_n_sents(text, num_sents(''))
+                print(f" sumbook num_sents: {num_sents('')} ")
                 sumbook = sumbook.replace('\n', ' ')
                 out_box.insert(END, "\nSystem: ", 'tag2')
                 out_box.insert(END, f"Summary for the whole uploaded {n_pages}-page document", 'tag4')
                 out_box.insert(END, f" '{title}':", 'tag5')
                 out_box.insert(END, f"\n{sumbook}")
                 window.update()
+
                 # For each chapter:
                 for e in lp:
                     # Call the function clean_text() to clean each chapter's text.
                     a, c, chap = clean_text(e[1])
                     # Get a summary for each chapter from a graph algorithm.
-                    gM, gk = get_n_sents(chap, num_sents(""), k)
+                    gM= get_n_sents(chap, num_sents(""))
                     e0 = e[0].replace('\n', ' ')
-                    out_box.insert(END, f"\n\n{e0}: {gM}.")
+                    out_box.insert(END, f"\n\n{e0}: ", 'tag4')
+                    out_box.insert(END, gM)
                     out_box.see(END)
                     window.update()
                 out_box.insert(END, "\n\nSystem: Please enter a desired number summary sentences and hit 'Return' key!",
@@ -153,7 +209,8 @@ def get_textFfile(out_box):
             # If chapters' structure cannot extract from PDF file.
             else:
                 # Call function paper2out(text) to process the text which was extracted from PDF file.
-                nsa, a, c, summary, kw = paper2out(text)
+                nsa, a, c, summary= paper2out(text)
+                # print(f"text; {text}")
                 # If a is not an empty string
                 # and the desired number of summary's sentences less than number sentences in a.
                 if a != ""  and num_sents("")< nsa:
@@ -167,14 +224,14 @@ def get_textFfile(out_box):
             # convert the file to a string.
             text = ftext2text(fname)
             # Call function paper2out(text) to process the string
-            nsa, a, c, summary, kw = paper2out(text)
+            nsa, a, c, summary= paper2out(text)
             # If a is not an empty string
             # and the desired number of summary's sentences less than number sentences in a.
             if a != "" and num_sents("")< nsa:
                 insert_outbox_article('', a, " by author(s)")
                 out_box.insert(END, "\nUser:", 'tag1')
             else:
-                insert_outbox_article('', summary, None)
+                insert_outbox_article('', summary, None,None)
 
 
 # 3.13 This function inserts an article's summary  to the out_box.
@@ -196,15 +253,19 @@ def insert_outbox_article(title, summary, aut, n):
 # 3.15 This function gets n sentences from a long document by a graph based algorithm.
 # Parameters: text,the number sentences of an output summary,the number keywords of an output.
 # Return: summary, keywords
-def get_n_sents(text, n, k):
-    sents, kwds = process_text(text=text, ranker=nx.degree_centrality, sumsize=n,kwsize=k, trim=80)
+def get_n_sents(text, n):
+    # ab, c, text = clean_text(text)
+    sents = get_summary(text=text, ranker=nx.degree_centrality, sumsize=n)
+    # print(sents)
     summary = ""
     #  "sents" is a list of tuples, each tuple is a pair of sentence's id and sentence's text.
     for sent in sents:
         # Extract only the sentence's text from each tuple and convert the tuple to string.
         s = str(sent[1])
-        summary += " " + s
-    return summary, kwds
+        summary += " " + s[0].upper() + s[1:]
+        summary = summary.replace('1 Introduction', ' ')
+        summary = summary.replace('  ',' ')
+    return summary
 
 
 # 3.16 This function cleans text.
@@ -218,6 +279,7 @@ def clean_text(text):
     text = re.sub('[^\w.!?:,{}%()\[\]@$=/~\n -]', ' ', text)  # this line code does not  result some missing words
     # Remove References and all text appears after that by calling remove_references(text) function.
     text = remove_references(text)
+    # print(f"text after remove reference {text}")
     # Call  function get_Abstract(text) to get an abstract and a text without abstract.
     ab, text = get_Abstract(text)
     # Remove Algorithm format if they exist.
@@ -248,6 +310,18 @@ def clean_text(text):
     text = re.sub('\.\.', '.', text)
     # Call a function get_Conclusion(text) to get a conclusion.
     c = get_Conclusion(text)
+    # l = text.split('\n')
+    # # print(l)
+    # for i in l:
+    #     # print(f"i  :{i}")
+    #     # print(f"i type :{type(i)}")
+    #     if len(i)< 20: l.remove(i)
+    #
+    # for i in l: print(f"i: {i}")
+    # t = ""
+    # for c in l:
+    #     t+= c+' '
+    # print(f" t: {t}")
     # Replace all newlines by ' '.
     text = re.sub('\n', ' ', text)
     return ab, c, text
@@ -269,25 +343,27 @@ def get_Abstract(text):
         # The word 'abstract' can be somewhere in body text or reference, so it causes a wrong spliting position
         # Get the second part for text which does not have author's information
         text_no_author = text.split(str(abs[0]), 1)[1]
+        # print(f" text no author : {text_no_author}")
         # Split the text into 2 parts by the key word 'Introduction' or 'INTRODUCTION',
         # Get the first part which is abstract
         if len(intr) > 0:
             abstract1 = text_no_author.split(str(intr[0]), 1)[0]
             abstract1 = re.sub('\n1\.?', '', abstract1)
             abstract1 = re.sub('\n', ' ', abstract1)
-            for i in range(len(intr)): text_no_author = text_no_author.split(str(intr[-1]), 1)[1]
+            # print(f" abstract1: {abstract1}")
+            # for i in range(len(intr)): text_no_author = text_no_author.split(str(intr[-1]), 1)[1]
         # Find the word 'KEYWORDS' or 'keywords'
-        k = re.findall('KEYWORDS|Keywords', abstract1)
-        # If the abstract1 contains the word 'KEYWORDS' or 'keywords'
-        if k != []:
-            # Split the text into 2 parts by the key word 'KEYWORDS' or 'Keywords',
-            # Get the first part for abstract1 which does not have key words part
-            abstract2 = abstract1.split(str(k[-1]), 1)[0]
-            abstract2 = re.sub('\.\s?[1]($|\n)', '.', abstract2)
-            return abstract2, text_no_author
-        # If the abstract1 does not contains the word 'KEYWORDS' or 'Keywords'
-        else:
-            return abstract1, text_no_author
+            k = re.findall('KEYWORDS|Keywords', abstract1)
+            # If the abstract1 contains the word 'KEYWORDS' or 'keywords'
+            if k != []:
+                # Split the text into 2 parts by the key word 'KEYWORDS' or 'Keywords',
+                # Get the first part for abstract1 which does not have key words part
+                abstract2 = abstract1.split(str(k[-1]), 1)[0]
+                abstract2 = re.sub('\.\s?[1]($|\n)', '.', abstract2)
+                return abstract2, text_no_author
+            # If the abstract1 does not contains the word 'KEYWORDS' or 'Keywords'
+            else:
+                return abstract1, text_no_author
     else:
         return '', text
 
@@ -519,15 +595,16 @@ def get_chapters_text(text):
 def paper2out(text):
     # Call the clean_text(text) function to clean the text.
     a, c, body_text = clean_text(text)
+    # print(f"text : {text}")
     # Use nltk sent_tokenize to get number sentences of a.
     sents = nltk.tokenize.sent_tokenize(a)
     nsa = len(sents)
     a = ""
     for s in sents:
         if ("University" or "Author" or "@") not in s: a += s
-    sum, kw = get_n_sents(body_text, num_sents(""), k)
+    sum = get_n_sents(body_text, num_sents(""))
     summary = sum
-    return nsa, a, c, summary, kw
+    return nsa, a, c, summary
 
 
 # 3.29 This function checks a file is PDF or not
@@ -577,12 +654,12 @@ def save2file(out_box):
 
 
 ### 3.Call the function to create a withow with the specific title, color, and size
-window = create_window("Offline Summary Tool", 'green4', 1086, 800)
+window = create_window("Offline Summary Tool", 'green4', 1086, 718)
 
 
 ### 5.Create a textbox  which contains the output text
 # width = 780, height = 208,x=60, y=80,wchar=97, hchar=8
-out_box = scroll_text(998, 188, 26, 26, 127, 30)
+out_box = scroll_text(998, 688, 26, 22, 127, 41)
 out_box.insert(END,"Hi! How are you today! I am Tam's reader assistant! I will help you save time, energy and money by summarizing  documents for \nyou without internet connection and no fee :)")
 out_box.insert(END, "\nSystem: Please enter a desired number summary sentences and hit 'Return' key!", 'tag2')
 out_box.insert(END,"\nUser:",'tag1')
@@ -599,20 +676,20 @@ buttonM = Button(window, bg="green", text="Upload a File", font=('Arial', 10, "b
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: get_textFfile(out_box))
 # Place a button in a correct position
-buttonM.place(x=420, y=510)
+buttonM.place(x=420, y=686)
 
 ###9. Create a button which a user clicks to clear the screen
 buttonR = Button(window, bg="green", text="Clear", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: clear())
 # Place a button in a correct position
-buttonR.place(x=50, y=510)
+buttonR.place(x=50, y=686)
 
 #10
 buttonL = Button(window, bg="green", text="Save", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: save2file(out_box))
 # Place a button in a correct position
-buttonL.place(x=780, y=510)
+buttonL.place(x=780, y=686)
 
 window.mainloop()
