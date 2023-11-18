@@ -30,9 +30,9 @@ https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
 
 https://github.com/tamdoancong/offline_summary_app_158MB/tree/main
 
-Below  is the link of the DEMO  which provides detailed instructions how to use this version:  
+Below  is the link of the DEMO  how to use this version:  
 
-https://www.youtube.com/watch?v=zv9dOiXoFjA
+https://www.youtube.com/watch?v=qCrx4TlGI_s
 
 #### II. Developers:
 
