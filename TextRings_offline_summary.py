@@ -55,9 +55,10 @@ def get_summary(text,ranker,sumsize):
     # g, ranks = textstar(g, ranker, sumsize, trim= 80)
     unsorted_ranks = ranker(g)
     ranks = sorted(unsorted_ranks.items(), reverse=True, key=lambda e: e[1])
-    summary_id = [i[0] for i in ranks if isinstance(i[0], int)][:sumsize]
+    summary_id = sorted([i[0] for i in ranks if isinstance(i[0], int)][:sumsize])
     all_sents = [sent for (sent, _) in lss]
     sents = [(i, all_sents[i]) for i in summary_id]
+    print(f"sents: {sents}")
     return sents
 # End : TextRings algorithm
 
@@ -431,6 +432,7 @@ def extract_chapter_pdf(r):
     l = []
     #  Get outline  from PDF format
     outline = r._get_outline()
+    print(f"outline: {outline}")
     # If the extracting outline  is empty, then return an empty list
     if outline == []:
         return []
