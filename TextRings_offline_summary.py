@@ -38,7 +38,7 @@ def text_normalize(text):
 def l_sents_lemmas2graph(l_sents_lemmas):
     g = nx.DiGraph()
     g.add_edge(0, len(l_sents_lemmas) - 1)  # connect first ID to last ID
-    for sent_id, (lemmas, _) in enumerate(l_sents_lemmas):
+    for sent_id, (_, lemmas) in enumerate(l_sents_lemmas):
         if sent_id > 0:
             g.add_edge(sent_id, sent_id - 1)  # connect an ID to a next lower ID in a sequence
         g.add_edge(lemmas[0], sent_id)  # connect first lemma to ID
