@@ -20,7 +20,7 @@ Our system outperforms several deep learning models but it just needs maximum 20
 Thus, people who have a computer even though it is 10 years old can use this app to experience and get benefit from AI.
 This is only a summary app, but deeply it supports equal deployment AI and social good.
 
-### @ TextRings Local Desktop AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 86 MB free space and less than 200 MB of memory for running locally.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
+### @RingStar Local Desktop AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 86 MB free space and less than 200 MB of memory for running locally.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
 
 #### I. Users can download a single .exe file (an end user version just double clicks for use after finishing download ) from my Google Drive link:
 
@@ -36,7 +36,7 @@ https://www.youtube.com/watch?v=qCrx4TlGI_s
 
 #### II. Developers:
 
-1. Download my python version TextRings_offline_summary.py 
+1. Download my python version RingStar_offline_summary.py 
 
 2. Install dependency libraries in requirements.txt :
 
