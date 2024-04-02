@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter.scrolledtext import ScrolledText
 from PyPDF2 import PdfReader, generic
 from tkinter import filedialog
-from builder1 import process_text
 import networkx as nx
 import re
 import os
@@ -11,6 +10,60 @@ import openai
 import socket
 import nltk
 import threading
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import sent_tokenize, word_tokenize
+
+# 2. TextRings algorithm
+# Start : TextRings algorithm
+stops=['a', 'about', 'above', 'across', 'after', 'again', 'al', 'all', 'almost', 'alone', 'along', 'already', 'also', 'although', 'always', 'among', 'an', 'and', 'another', 'any', 'anybody', 'anyone', 'anything', 'anywhere', 'are', 'around', 'as', 'at', 'away', 'b', 'back', 'backed', 'backing', 'backs', 'be', 'been', 'before', 'began', 'behind', 'best', 'better', 'between', 'both', 'but', 'by', 'c', 'came', 'can', 'cannot', 'case', 'cases', 'certain', 'certainly', 'clear', 'clearly', 'come', 'could', 'd', 'did', 'do', 'does', 'done', 'down', 'down', 'downed', 'downing', 'downs', 'during', 'e', 'each', 'early', 'either', 'end', 'ended', 'ending', 'ends', 'enough', 'et', 'even', 'evenly', 'ever', 'every', 'everybody', 'everyone', 'everything', 'everywhere', 'f', 'face', 'faces', 'fact', 'facts', 'far', 'felt', 'few', 'find', 'finds', 'first', 'for', 'four', 'from', 'full', 'fully', 'further', 'furthered', 'furthering', 'furthers', 'g', 'gave', 'general', 'generally', 'get', 'gets', 'go', 'going', 'good', 'goods', 'got', 'great', 'greater', 'greatest', 'group', 'grouped', 'grouping', 'groups', 'h', 'had', 'has', 'have', 'having', 'he', 'her', 'here', 'herself', 'high', 'high', 'high', 'higher', 'highest', 'him', 'himself', 'his', 'how', 'however', 'i', 'if', 'important', 'in', 'interest', 'interested', 'interesting', 'interests', 'into', 'is', 'it', 'its', 'itself', 'j', 'just', 'k', 'keep', 'keeps', 'kind', 'knew', 'know', 'known', 'knows', 'l', 'large', 'largely', 'last', 'later', 'latest', 'least', 'less', 'let', 'lets', 'like', 'likely', 'long', 'longer', 'longest', 'm', 'made', 'make', 'making', 'man', 'many', 'may', 'me', 'might', 'more', 'most', 'mostly', 'mr', 'mrs', 'much', 'must', 'my', 'myself', 'n', 'need', 'needed', 'needing', 'needs', 'never', 'new', 'newer', 'newest', 'next', 'no', 'nobody', 'non', 'noone', 'not', 'nowhere', 'o', 'of', 'off', 'often', 'on', 'once', 'one', 'only', 'open', 'or', 'other', 'others', 'our', 'out', 'over', 'p', 'part', 'parted', 'parting', 'parts', 'per', 'perhaps', 'place', 'places', 'point', 'pointed', 'pointing', 'points', 'present', 'presented', 'presenting', 'presents', 'problem', 'problems', 'put', 'puts', 'q', 'quite', 'r', 'rather', 'really', 'room', 'rooms', 's', 'said', 'same', 'saw', 'say', 'says', 'seem', 'seemed', 'seeming', 'seems', 'sees', 'several', 'shall', 'she', 'should', 'show', 'showed', 'showing', 'shows', 'side', 'sides', 'since', 'so', 'some', 'somebody', 'someone', 'something', 'somewhere', 'soon', 'state', 'states', 'still', 'still', 'such', 'sure', 't', 'than', 'that', 'the', 'their', 'them', 'then', 'there', 'therefore', 'these', 'they', 'thing', 'things', 'think', 'thinks', 'this', 'those', 'though', 'thought', 'thoughts', 'three', 'through', 'thus', 'to', 'today', 'together', 'too', 'took', 'toward', 'two', 'u', 'under', 'until', 'up', 'upon', 'us', 'use', 'used', 'uses', 'v', 'very', 'w', 'want', 'wanted', 'wanting', 'wants', 'was', 'way', 'ways', 'we', 'well', 'wells', 'went', 'were', 'what', 'when', 'where', 'whether', 'which', 'while', 'who', 'whole', 'whose', 'why', 'will', 'with', 'within', 'without', 'work', 'worked', 'working', 'works', 'would', 'x', 'y', 'yet', 'you', 'your', 'yours', 'z']
+
+
+def text_normalize(text):
+    lemmatizer = WordNetLemmatizer()
+    sents = sent_tokenize(text)
+    l_sents_lemmas =[]
+    for sent in sents:
+        if len(sent)> 30 and len(sent) < 200 and re.findall("=|\.,|pages",str(sent))==[]:
+        # if  len(sent)> 30 and len(sent) < 200 and '='not in sent and '.,' not in sent:
+            words = word_tokenize(sent)
+            l_lemmas = []
+            if len(words) > 5:
+                for word in words:
+                    lemma = lemmatizer.lemmatize(word)
+                    if lemma.lower() not in stops and lemma not in [',', '.', '!', '?', '@', '#', '$', '%', '&', '*', '^', '+', '-', '/', '|', '~', ':', ')', '(', '=', '}', '{', '[', ']', '1', '2', '3', '4', '5', '6', '7', '8', '9',';']:
+                        l_lemmas.append(lemma)
+                if not l_lemmas: continue
+                l_sents_lemmas.append((sent,l_lemmas))
+    # print(l_sents_lemmas)
+
+    return l_sents_lemmas
+
+def l_sents_lemmas2graph(l_sents_lemmas):
+    g = nx.DiGraph()
+    g.add_edge(0, len(l_sents_lemmas) - 1)  # connect first ID to last ID
+    for sent_id, (_, lemmas) in enumerate(l_sents_lemmas):
+        if sent_id > 0:
+            g.add_edge(sent_id, sent_id - 1)  # connect an ID to a next lower ID in a sequence
+        g.add_edge(lemmas[0], sent_id)  # connect first lemma to ID
+        # g.add_edge(lemmas[-1], sent_id)
+        for i in range(1, len(lemmas)):
+            g.add_edge(lemmas[i], lemmas[i - 1])
+        #     g.add_edge(lemmas[i],sent_id)
+    return g
+
+
+def get_summary(text,ranker,sumsize):
+    lss = text_normalize(text)
+    g = l_sents_lemmas2graph(lss)
+    # g, ranks = textstar(g, ranker, sumsize, trim= 80)
+    unsorted_ranks = ranker(g)
+    ranks = sorted(unsorted_ranks.items(), reverse=True, key=lambda e: e[1])
+    summary_id = sorted([i[0] for i in ranks if isinstance(i[0], int)][:sumsize])
+    all_sents = [sent for (sent, _) in lss]
+    sents = [(i, all_sents[i]) for i in summary_id]
+    print(f"sents: {sents}")
+    return sents
+# End : TextRings algorithm
 
 
 # 2. Current working directory
@@ -316,15 +369,15 @@ def user_know():
 # 4.16 This function gets n sentences from a long document by a graph based algorithm.
 # Parameters: text,the number sentences of an output summary,the number keywords of an output.
 # Return: summary, keywords
-def get_n_sents(text, n, k):
-    sents, kwds = process_text(text=text, ranker=nx.degree_centrality, sumsize=n,kwsize=k, trim=80)
+def get_n_sents(text,  n):
+    sents = get_summary(text=text, ranker=nx.degree_centrality, sumsize=n)
     summary = ""
     #  "sents" is a list of tuples, each tuple is a pair of sentence's id and sentence's text.
     for sent in sents:
         # Extract only the sentence's text from each tuple and convert the tuple to string.
         s = str(sent[1])
         summary += " " + s[0].upper() + s[1:]
-    return summary, kwds
+    return summary
 
 
 # 4.16 This function cleans text.
@@ -731,7 +784,7 @@ def paper2out(text):
         osummary += "\n" + summary + '.'
     # If internet is not available
     else:
-        sum, kw = get_n_sents(body_text, get_sents_box(""), k)
+        sum= get_n_sents(body_text, get_sents_box(""))
         osummary += sum
     return nsa, a, c, osummary
 
@@ -897,7 +950,7 @@ def num2int(num):
 
 
 # 5. Create a withow with the specific title, color, and size.
-window = create_window("Fun Chat", 'green4', 1086, 800)
+window = create_window("Fun Chat", 'green4', 1086, 718)
 
 # 6. Create a textbox  where a user can enter an API key and a system can send an instruction or a message to a user.
 key_box = Text(window, width = 108, height = 2, fg = 'forest green')
@@ -915,7 +968,7 @@ sents_box.bind('<Return>', get_sents_box)
 
 
 # 8. Create a textbox  where a system can send an output(responsive) text and a user can enter a prompt.
-out_box = scroll_text(998, 188, 26, 50, 126, 28)
+out_box = scroll_text(998, 188, 26, 50, 126, 39)
 out_box.tag_config('tag1', foreground='red', font=('Arial', 10, "bold"))
 out_box.tag_config('tag2', foreground='green', font=('Arial', 10, "bold"))
 out_box.tag_config('tag3', foreground='purple4', font=('Arial', 10, "italic"))
@@ -929,24 +982,24 @@ text = out_box.get("1.0", END)
 
 
 # 9. Create an "Upload a File" button which a user clicks to upload a file.
-buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 12, "bold"),
+buttonR = Button(window, bg="green", text="Upload a File", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: threading.Thread(get_textFfile(out_box)).start())
 # Place a button in a correct position
-buttonR.place(x=746, y=504)
+buttonR.place(x=780, y=686)
 
 
 # 10. Create a  "mode" button which a user clicks to switch the mode.
-buttonL = Button(window, bg="green", text="Local mode", font=('Arial', 12, "bold"),
+buttonL = Button(window, bg="green", text="Local mode", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: on_off())
-buttonL.place(x=26, y=504)
+buttonL.place(x=50, y=686)
 
 
 # 11. Create a  "Provide your API key" button which a user clicks to provide an openAI API key text file.
-buttonM = Button(window, bg="green", text="Provide your API key", font=('Arial', 12, "bold"),
+buttonM = Button(window, bg="green", text="Provide your API key", font=('Arial', 10, "bold"),
                  width=30, height=1, anchor=CENTER, highlightthickness=1,
                  command=lambda: upload_key())
-buttonM.place(x=386, y=504)
+buttonM.place(x=420, y=686)
 
 window.mainloop()
