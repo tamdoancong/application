@@ -1,24 +1,15 @@
-﻿According to  United Census Bureau https://www.census.gov/quickfacts/fact/table/US/HSD410221, until 2021, there are around 21 million American who have computer but unable to access to the internet at their home.
-Boston Consulting Group https://www.bcg.com/publications/2021/digital-access-in-united-states-education and Education Week Research https://www.edweek.org/technology/most-students-now-have-home-internet-access-but//-what-about-the-ones-who-dont/2021/04 estimated 12 million of them are US students.
-This category is extremely huger in the world.
-This giant vulnerable group of people do not have an opportunity to access  internet Artificial Intelligence(AI)  apps based deep learning models like ChatGPT https://openai.com/blog/chatgpt , Google Bart https://ai.google/static/documents/google-about-bard.pdf ,etc or  local deep learning model which requires  the latest hardware (Central Processing Unit(CPU), Graphics Processing Unit(GPU)), the newest software(Compute Unified Device Architecture(CUDA)), big Random Access Memory(RAM), and computer skills.
+﻿According to  United Census Bureau https://www.census.gov/quickfacts/fact/table/US/HSD410221, until 2021, there were around 21 million American who have computer but unable to access to the internet at their home.
+Boston Consulting Group https://www.bcg.com/publications/2021/digital-access-in-united-states-education and Education Week Research https://www.edweek.org/technology/most-students-now-have-home-internet-access-but//-what-about-the-ones-who-dont/2021/04 estimated that 12 million of them were higher education students in US.
+This category is extremely large across the entire world.
+This vulnerable group of people does not have the opportunity to access internet-based Artificial Intelligence (AI) apps built on Large Language Models like ChatGPT and Google Bard, etc., or local deep learning models, which require high-performance hardware and software, such as Central Processing Units (CPUs), Graphics Processing Units (GPUs), Compute Unified Device Architecture (CUDA), large amounts of Random Access Memory (RAM), and computer skills.
+These people have been left behind in the internet revolution, we should not leave them far behind again in the AI revolution. 
 
-However, deep learning models have dominated Natural Language Processing(NLP) nowadays.
-Especially, after ChatGPT appeared and blew a new wind to NLP research and industry, Large Language Models(LLMs) quickly become a new attractive trend, rapidly growth up investment research and solid established future area.
-Although GPT4 https://openai.com/gpt-4 is currently the state of the art (SOTA) in the field, many big tech companies have invested a huge money and time to create a new LLMs to compete with GPT 4 , for example Google Bart ,LLaMa https://ai.meta.com/blog/large-language-model-llama-meta-ai/ ,Ernie Bot https://www.technologyreview.com/2023/03/22/1070154/baidu-ernie-bot-chatgpt-reputation/ , Grok https://grok.x.ai/,etc.
-These fantastic models need billions dollars to build, train, tune, deliver, and maintain  in a big clouding center and require a giant amount of data for pre-training process which takes from months to years.
-Despite that, these models have a limited input token.
-
-In other hand, graph based models without restrict number of input token do not need training process or  running in supper computer.
-However, the performance of graph based method is usually lower  far away from  deep learning approaches SOTA.
-
-We propose a local, non training, small size and real time   open source summarization system .
-A significant part of the system is a novel fast graph based algorithm which connects lemmas and sentence identifiers to build a text graph.
-The algorithm  ranks, extracts, and returns  the salient sentences in the order in which they occur in the text .
-The other important components are local tools which convert, extract, and clean page's text, chapter's text, or text from a PDF document before feeding to the summarizer.
-Our system outperforms several deep learning models but it just needs maximum 200MB memory and 158 MB of disk, so it  can run in any computer.
-Thus, people who have a computer even though it is 10 years old can use this app to experience and get benefit from AI.
-This is only a summary app, but deeply it supports equal deployment AI and social good.
+I propose a graph-based RingChains topology summarizer which surpasses several
+recent deep learning models in zero shot learning (including GPT 3.5)
+on several summarization datasets.
+This system only needs maximum 200MB memory and 158 MB of disk, so it  can run in any computer.
+Thus, people with a computer, even if it is 10 years old, can use this app to experience and benefit from AI.
+While this is only a summary app, it supports equitable deployment AI and social good.
 
 ### @RingChains Local Desktop AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 86 MB free space and less than 200 MB of memory for running locally.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
 
@@ -40,7 +31,7 @@ https://www.youtube.com/watch?v=eRzmm0elPuA
 
 2. Install dependency libraries in requirements.txt :
 
-
+##########################################################################
 
 ### @@ Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
 
@@ -62,4 +53,3 @@ https://github.com/tamdoancong/API_offline_summary_app
     
 
 
-`
