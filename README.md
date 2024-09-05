@@ -39,7 +39,7 @@ These architectures also handle limited input tokens of most standard LLMs but a
 the expensive process of modifying architecture or of additional training. 
 Below is an end user app built on the Local Extractor and API LLM architecture.
 
-### @@ An End User RingChains and API LLM Summarization app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
+##### @@ An End-User Local RingChains and API LLM Summarization app (Version 1.1.0 Window OS,158 MB) : The app can summarize long documents without length restrictions either in 'Local mode' (extractive summary output of RingChains) or in 'API mode' (abstractive summary output from API LLMs).
 
 #### I. Users can download directly a single .exe file from my Google Drive link:
 
