@@ -11,8 +11,7 @@ This system only needs maximum 200MB memory and 158 MB of disk, so it  can run i
 Thus, people with a computer, even if it is 10 years old, can use this app to experience and benefit from AI.
 While this is only a summary app, it supports equitable deployment AI and social good.
 
-### @RingChains Local Desktop AI summary app(Version 1.0.1 for Window OS) : Local app! This version only needs 86 MB free space and less than 200 MB of memory for running locally.The app can summarize long documents without word or token limit (ex: 800 pages) A user just needs download a single .exe file. This app can run anywhere and anytime with a working computer! This app was built for users who do not have budget for the internet at home or do not want push their documents to the cloud or who  have good finance to access fantastic LLMs app but travel to somewhere without internet connection or cloud system in busy period time . In the future this app will be considered to deliver by CDs or USB!
-
+##### @RingChains Local Desktop AI Summary App (Version 1.0.1 for Windows OS): Local app! This version requires only 86 MB of free disk space and less than 200 MB of memory to run locally. The app can summarize long documents without length restriction. Users only need to download a single .exe file. This app was built for users who do not have a budget for internet access at home or prefer not to upload their documents to the internet.
 #### I. Users can download a single .exe file (an end user version just double clicks for use after finishing download ) from my Google Drive link:
 
 https://drive.google.com/drive/folders/1KM0cd_-hSne6g7nYFDdjVWWGPS4Ln6dS
@@ -33,7 +32,14 @@ https://www.youtube.com/watch?v=eRzmm0elPuA
 
 ##########################################################################
 
-### @@ Combined API and offline summary AI app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
+I propose an enhanced Large Language Models(LLMs) architectures for summarizing long documents 
+which reduce significant input token cost, number of unimportant input tokens,
+and number of unnecessary computational operations when utilizing LLMs for summarizing long documents.
+These architectures also handle limited input tokens of most standard LLMs but avoiding 
+the expensive process of modifying architecture or of additional training. 
+Below is an end user app built on the Local Extractor and API LLM architecture.
+
+### @@ An End User RingChains and API LLM Summarization app (Version 1.1.0 Window OS,158 MB) : In this version, the app can summarize long documents  (ex: 800 pages) both  in 'Local mode' (producing reasonable result) or in 'API mode' (generating fantastic result).
 
 #### I. Users can download directly a single .exe file from my Google Drive link:
 
